@@ -6,6 +6,11 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import XYZ from 'ol/source/XYZ';
+import VectorSource from 'ol/layer/Vector';
+import Vector from 'ol/layer/Vector';
+import Feature from 'ol/feature';
+import Point from 'ol/geom/point';
+
 
 
 @Component({
@@ -25,6 +30,10 @@ export class AppComponent implements OnInit {
   //  this._points.getPoints()
   //    .subscribe(data=>this.contrib=data);
   }
+  overlay: VectorSource;
+  tempfeat: Feature;
+  temppoint: Point;
+  temppoint.setCoordinates([38.008075 , 23.766861],'XY');
 
   initializeMap(){
       this.map=new Map({
@@ -34,6 +43,9 @@ export class AppComponent implements OnInit {
           source: new XYZ({
             url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           })
+        }),
+        new Vector({
+          source:this.overlay
         })
       ],
       view: new View({
