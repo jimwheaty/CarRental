@@ -12,7 +12,7 @@ import Feature from 'ol/feature';
 import Point from 'ol/geom/point';
 
 
-//perfect
+//perfect2
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
