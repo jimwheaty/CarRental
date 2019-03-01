@@ -1,16 +1,107 @@
 <div id="map" class="map"></div>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
-<div class="myform">
+
+<div *ngIf="infoWindow==true" id=entryInfo class=entryInfo>
+  <button (click)="onCloseInfo()">Close</button>
+  <br>
+  <ul [(ngModel)]="entryInfo" ngDefaultControl>
+    <li>{{entryInfo.name}}</li>
+    <li>{{entryInfo.info}}</li>
+  </ul>
+</div>
+
+<!-- 
+<form action="/action_page.php" method="get">
+  <input list="browsers" name="browser">
+  <datalist id="browsers">
+    <option value="Internet Explorer">
+    <option value="Firefox">
+    <option value="Chrome">
+    <option value="Opera">
+    <option value="Safari">
+  </datalist>
+  <input type="submit">
+</form> 
+-->
+
+<div class="header" *ngIf="infoWindow==false">
+  <div class="search">
+    <form autocomplete="on">
+      <input [(ngModel)]="form_filter_name" placeholder="Όνομα: πχ. Ford Focus" list="Names" name="Names" />
+      <datalist id="Names">
+        <option value="Ford fiesta">
+        <option value="Citroen C1">
+        <option value="Opel Corsa">
+        <option value="Renault Captur">
+        <option value="Opel astra">
+        <option value="Mercedes-Benz A-Class"></option>
+        <option value="Nissan Qashqai"></option>
+        <option value="Volkswagen Touran"></option>
+        <option value="Volkswagen Caravelle"></option>
+        <option value="Opel Insignia"></option>
+        <option value="Volkswagen Passat"></option>
+        <option value="Audi A6"></option>
+      </datalist>
+      <input [(ngModel)]="form_filter_category" placeholder="Κατηγορία: πχ. Μικρό" list="Categories" name="Categories" />
+      <datalist id="Categories">
+        <option value="Μικρό"></option>
+        <option value="Μεσαίο"></option>
+        <option value="Estate"></option>
+        <option value="Επιβατικό"></option>
+        <option value="Μεγάλο"></option>
+        <option value="Premium"></option>
+      </datalist>
+      <!-- <input [(ngModel)]="form_filter_tags" placeholder="Επιπλέον" list="Tags" name="Tags" /> -->
+      <button (click)="onTagList()">Επιπλέον...</button>
+
+      <button (click)="onFilter()">add</button>
+      
+      <br>
+      <div *ngIf="tagListWindow==true" class="tagList">
+        <ul>
+          <input type="checkbox"> checkbox 1
+          <br>
+          <input type="checkbox"> checkbox 2
+          <br>
+          <input type="checkbox"> checkbox 3
+          <br>
+          <input type="checkbox"> checkbox 4
+        </ul>
+      </div>
+    </form>
+  </div>
+  <div class="getlocation">
+      <button (click)="ongetlocation()">Find me !</button>
+  </div>
+  <div class="offers">
+    <button (click)="onFilter()">See offers</button>
+  </div>
+  
+  <div class="profile" *ngIf="loggedIn==true; else elseBlock">
+    <button>Profile<!-- {{user.name}} --></button>
+    <ng-template #elseBlock>
+      <button>You have an account? Make one now!</button>
+    </ng-template>
+  </div>
+</div>
+
+
+
+<div *ngIf="uploadWindow==true" id="uploadEntry" class="uploadEntry">
+  <button (click)="onCloseUploadWindow()">Close</button>
+  <br><br>
   <input [(ngModel)]="form_name" placeholder="name" type="text" />
   <br><br>
   <input [(ngModel)]="form_value"  placeholder="value" type="number" />
   <br><br>
   <button (click)="onSave()">save</button>
-  <!-- <button></button> -->
+</div>
 
-
+<div class="uploadButton">
+  <button *ngIf="uploadWindow==false"(click)="onOpenUploadWindow()" >Make a new upload here !</button>
 </div>
 
 <div class="pointer"></div>
 
-<div class="display-form"  [ngStyle]="{left:form_left + 'px',top:form_top+'px'}" >{{display_name}} : {{display_value}}</div>
+<div class="display-form"  [ngStyle]="{left:form_left + 'px',top:form_top+'px'}" >{{display_name}} {{display_value}}</div>

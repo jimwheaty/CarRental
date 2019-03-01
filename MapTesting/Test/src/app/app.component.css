@@ -1,3 +1,41 @@
+.header{
+    position: absolute;
+    top:20px;
+    height:100px;
+}
+.header .offers{
+    position: absolute;
+    top:0px;
+    left:40px;
+    width: max-content;
+    background:white;
+}
+.header .profile{
+    position: absolute;
+    top:0px;
+    right:40px;
+}
+.header .getlocation{
+    position:absolute;
+    width: max-content;
+    top:0px;
+    right:140px;
+    background: white;
+}
+
+.header .search{
+    position: absolute;
+    top:40px;
+    left: 40px;
+    width:max-content;
+    background: white;
+}
+.header .search .tagList{
+    position: absolute;
+    right:5%;
+    background:white;
+}
+
 .map{
     position:absolute;
     top:0px;
@@ -7,14 +45,36 @@
     background: #ccc;
 }
 
-.myform{
-    position:absolute;
-    height:100px;
+
+.entryInfo{
+    position: absolute;
+    top:0px;
+    left:0px;
+    bottom:0px;
+    width: 400px;
     background: white;
-    padding:20px;
-    border-radius:6px;
 }
 
+.uploadButton{
+    position: absolute;
+    bottom:50px;
+    right:40%;
+    left:40%;
+    width:max-content;
+    background: white;
+}
+
+.uploadEntry{
+    position:absolute;
+    height:150px;
+    background: white;
+    background-size: cover;
+    padding:20px;
+    bottom:20%;
+    right:30%;
+    left:30%;
+    border-radius:6px;
+}
 
 .pointer{
     position:absolute;
