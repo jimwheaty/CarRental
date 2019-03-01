@@ -3,12 +3,24 @@
 
 
 <div *ngIf="infoWindow==true" id=entryInfo class=entryInfo>
-  <button (click)="onCloseInfo()">Close</button>
+  <div class="exodia">
+    <button (click)="onCloseInfo()">Close</button>
+  </div>
   <br>
   <ul [(ngModel)]="entryInfo" ngDefaultControl>
     <li>{{entryInfo.name}}</li>
     <li>{{entryInfo.info}}</li>
   </ul>
+  <div class="image">
+    <h2 style="margin-left:20px">Αυτοκίνητα</h2>
+    <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;"> 
+  </div>
 </div>
 
 <!-- 
