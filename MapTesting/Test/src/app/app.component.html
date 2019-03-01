@@ -4,23 +4,26 @@
 
 <div *ngIf="infoWindow==true" id=entryInfo class=entryInfo>
   <div class="exodia">
-    <button (click)="onCloseInfo()">Close</button>
+    <button (click)="onCloseInfo()">Κλείσε</button>
   </div>
   <br>
+  
   <ul [(ngModel)]="entryInfo" ngDefaultControl>
     <li>{{entryInfo.name}}</li>
     <li>{{entryInfo.info}}</li>
   </ul>
+  <h2>Διεύθυνση: __________________</h2>
   <div class="image">
     <h2 style="margin-left:20px">Αυτοκίνητα</h2>
     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
     alt="W3Schools.com" style="width:400px;height:150px;"> 
   </div>
+  <h2>Αξιολογήσεις και σχόλια</h2>
 </div>
 
 <!-- 
@@ -67,12 +70,12 @@
       <!-- <input [(ngModel)]="form_filter_tags" placeholder="Επιπλέον" list="Tags" name="Tags" /> -->
       <button (click)="onTagList()">Επιπλέον...</button>
 
-      <button (click)="onFilter()">add</button>
+      <button (click)="onFilter()">Προσθήκη</button>
       
       <br>
       <div *ngIf="tagListWindow==true" class="tagList">
         <ul>
-          <input type="checkbox"> checkbox 1
+          <input type="checkbox" > checkbox 1
           <br>
           <input type="checkbox"> checkbox 2
           <br>
@@ -84,34 +87,34 @@
     </form>
   </div>
   <div class="getlocation">
-      <button (click)="ongetlocation()">Find me !</button>
+      <button (click)="ongetlocation()">Βρες με !</button>
   </div>
   <div class="offers">
-    <button (click)="onFilter()">See offers</button>
+    <button (click)="onFilter()">Προσφορές</button>
   </div>
   
-  <div class="profile" *ngIf="loggedIn==true; else elseBlock">
-    <button>Profile<!-- {{user.name}} --></button>
-    <ng-template #elseBlock>
-      <button>You have an account? Make one now!</button>
-    </ng-template>
+  <div class="profile" *ngIf="loggedIn==true">
+    <button>Προφίλ<!-- {{user.name}} --></button>
+  </div>
+  <div class="profile" *ngIf="loggedIn==false">
+    <button >Έχετε λογαριασμό? Δημιουργήστε τώρα!</button>
   </div>
 </div>
 
 
 
 <div *ngIf="uploadWindow==true" id="uploadEntry" class="uploadEntry">
-  <button (click)="onCloseUploadWindow()">Close</button>
+  <button (click)="onCloseUploadWindow()">Κλείσε</button>
   <br><br>
   <input [(ngModel)]="form_name" placeholder="name" type="text" />
   <br><br>
   <input [(ngModel)]="form_value"  placeholder="value" type="number" />
   <br><br>
-  <button (click)="onSave()">save</button>
+  <button (click)="onSave()">Αποθήκευση</button>
 </div>
 
 <div class="uploadButton">
-  <button *ngIf="uploadWindow==false"(click)="onOpenUploadWindow()" >Make a new upload here !</button>
+  <button *ngIf="uploadWindow==false"(click)="onOpenUploadWindow()" >Προσθήκη αυτοκινήτου εδώ !</button>
 </div>
 
 <div class="pointer"></div>

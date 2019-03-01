@@ -1,12 +1,12 @@
 .header{
     position: absolute;
-    top:20px;
+    top:10px;
     height:100px;
     width:99%;
 }
 .header .offers{
     position: absolute;
-    top:0px;
+    top:10px;
     left:40px;
     width: max-content;
     background:white;
@@ -19,14 +19,14 @@
 .header .getlocation{
     position:absolute;
     width: max-content;
-    top:0px;
-    right:140px;
+    top:130px;
+    left:40px;
     background: white;
 }
 
 .header .search{
     position: absolute;
-    top:40px;
+    top:50px;
     left: 40px;
     width:max-content;
     background: white;
@@ -53,18 +53,18 @@
     left:0px;
     bottom:0px;
     width: 400px;
-    overflow: auto;
+    overflow-y: auto;
     background: white;
 }
 
 .entryInfo .exodia {
-    position: relative;
+    position: absolute;
     right:0px;
 }
-.entryInfo .exodia button{
+/* .entryInfo .exodia button{
     position: absolute;
     float: right;
-}
+} */
 
 .uploadButton{
     position: absolute;

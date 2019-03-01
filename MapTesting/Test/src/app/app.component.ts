@@ -16,7 +16,7 @@ const API_END_POINT = 'http://127.0.0.1:3000/points';
 })
 export class AppComponent implements OnInit {
   takishome:any;
-  loggedIn:boolean=true;
+  loggedIn:boolean=false;
 
   geolocationPosition:any;
   locationOptions = {
@@ -265,6 +265,7 @@ export class AppComponent implements OnInit {
     
     this.pointService.upload(point).subscribe(point => this.uploadResponse.push(point));
     console.log("response from server=", this.uploadResponse)
+    this.uploadWindow=false;
   }
 
   onCloseInfo() {
