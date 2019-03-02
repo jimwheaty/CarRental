@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http'
 import { FormsModule } from '@angular/forms'
 
 import { AppComponent } from './app.component';
-import { mapPointService } from './mappoint.service';
+import { appService } from './app.service';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { mapPointService } from './mappoint.service';
   imports: [
     BrowserModule, HttpClientModule, FormsModule
   ],
-  providers: [mapPointService],
+  providers: [appService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -16,6 +16,12 @@
     top:0px;
     right:40px;
 }
+.header .profileWindow {
+    position: absolute;
+    top:35px;
+    right:40px;
+    background:white;
+}
 .header .getlocation{
     position:absolute;
     width: max-content;

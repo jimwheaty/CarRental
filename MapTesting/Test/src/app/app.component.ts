@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import * as ol from 'openlayers';
 import { stringify } from 'querystring';
-import { mapPointService } from './mappoint.service';
-import { mapPoint } from './mappoint'
+import { appService } from './app.service';
+import { mapPoint } from './mappoint';
+import { User } from './user';
 import { I18nContext } from '@angular/compiler/src/render3/view/i18n/context';
-
-//const API_END_POINT = 'http://my.rest.end.point';
-const API_END_POINT = 'http://127.0.0.1:3000/points';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +26,13 @@ export class AppComponent implements OnInit {
   public infoWindow:boolean=false;
   public uploadWindow:boolean=false;
   public tagListWindow:boolean=false;
+  public profileWindow:boolean=false;
+  public loginWindow:boolean=false;
+  
   public uploadResponse = [];
+  public signupResponse = [];
+  public loginResponse = [];
+
   public entryInfo:any;
   select:any;
   //point = new Point(38.050855, 23.819017);
@@ -41,6 +45,8 @@ export class AppComponent implements OnInit {
 
   form_name: string = "";
   form_value: string = "";
+  username: string = "";
+  password: string = "";
 
   display_name:string='';
   display_value:string='';
@@ -69,14 +75,15 @@ export class AppComponent implements OnInit {
         stroke:new ol.style.Stroke({
           color:'green'
         })
+      })
     })
-  })
-  
-  // constructor(private httmp: HttpClient) {}
-  constructor(private pointService: mapPointService){}
-
-  ngOnInit() {
-
+    
+    // constructor(private httmp: HttpClient) {}
+    constructor(private appservice: appService){}
+    
+    ngOnInit() {
+    this.isLoggedIn();
+      
     this.vectorSource = new ol.source.Vector();
 
     this.vectorLayer = new ol.layer.Vector({
@@ -110,20 +117,6 @@ export class AppComponent implements OnInit {
           this.form_left = -9999;
         }
     })
-  //   this.map.on('singleclick', (evt: any) => {
-  //     let found = false;
-  //     this.map.forEachFeatureAtPixel(evt.pixel,(feature=>{
-  //       let p = feature.getProperties();
-  //       this.display_info = p.info;
-  //       this.form_left = evt.pixel[0]+10;
-  //       this.form_top = evt.pixel[1]+10;
-  //       found = true;
-  //     }))
-  //     if(!found){
-  //       this.form_left = -9999;
-  //     }
-  // })
-
   
   // create a Select interaction and add it to the map
     this.select = new ol.interaction.Select({
@@ -142,6 +135,16 @@ export class AppComponent implements OnInit {
     
     this.getMyPois();
   }
+  isLoggedIn() {
+    let tokenValue = localStorage.getItem("token");
+    if (tokenValue ===null) {
+      this.loggedIn=false;
+    } 
+    else {
+      this.loggedIn=true;
+    }
+  }
+
   addSelectedFeatures(event) {
     console.log("adding...")
     var feature = event.target.item(0);
@@ -169,7 +172,7 @@ export class AppComponent implements OnInit {
     console.log("42-5");
     // this.pointService.getPoints()
     //   .subscribe(data => this.points = data)
-    this.pointService.getPoints()
+    this.appservice.getPoints()
       .toPromise()
       .then((d: {x:number, y:number, name:string, info:string}[]) => {
         console.log("42");
@@ -191,53 +194,6 @@ export class AppComponent implements OnInit {
   // getMyPois() {
   //   this.pointService.enroll(this.point).subscribe(data => console.log("Success",data))
   // }
-
-//   getMyPois1() {
-//     console.log("42-1");
-
-//     this.httmp.get(API_END_POINT)
-//       .toPromise()
-//       .then((d: {x:number, y:number}/*{ x: number, y: number, name: string, value: string }*/) => {
-//         console.log("42");
-//         //let max = Math.max(...d.map(dd=>parseFloat(dd.value)));
-
-// //        d.forEach(datum => {
-//           let datum=d;
-//           let lonlat: [number, number] = [datum.x, datum.y];
-//           let coordinates = ol.proj.fromLonLat(lonlat);
-//           let feature = new ol.Feature(
-//             new ol.geom.Point(coordinates)
-//           );
-//           let value = parseFloat(datum.value);
-//           let color= 'red';
-
-// //          if(value===max){
-// //            color="yellow";
-// //          }
-//           let style = new ol.style.Style(
-//             {
-//               image: new ol.style.Circle({
-//                 radius:7,
-//                 fill: new ol.style.Fill({
-//                   color:color
-//                 }),
-//                 stroke:new ol.style.Stroke({
-//                   color:'blue'
-//                 })
-              
-//               })
-//             }
-//           )
-
-//           let value = parseFloat(datum.value);
-//           feature.setStyle(style);
-//           //feature.setProperties({name:datum.name,value:datum.value});
-//           feature.setProperties({x:datum.x, y:datum.y});
-//           this.vectorSource.addFeature(feature);
-// //        }
-// //        )
-
-//       })
 //       /*.catch((err: HttpErrorResponse) => {
 //         // simple logging, but you can do a lot more, see below
 //         console.error('An error occurred:', err.error);
@@ -263,7 +219,7 @@ export class AppComponent implements OnInit {
     f.setProperties({name:this.form_name,info:this.form_value});
     this.vectorSource.addFeature(f);
     
-    this.pointService.upload(point).subscribe(point => this.uploadResponse.push(point));
+    this.appservice.upload(point).subscribe(point => this.uploadResponse.push(point));
     console.log("response from server=", this.uploadResponse)
     this.uploadWindow=false;
   }
@@ -276,6 +232,18 @@ export class AppComponent implements OnInit {
   }
   onTagList() {
     this.tagListWindow = !this.tagListWindow;
+  }
+  onProfile() {
+    this.profileWindow = !this.profileWindow;
+  }
+  onSignUpButton() {
+    //check if username is unique
+    let user = {username:this.username, password:this.password};
+    this.appservice.signup(user).subscribe(user => this.signupResponse.push(user));
+  }
+  onLogInButton() {
+    let user = {username:this.username, password:this.password};
+    this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
   }
 
   ongetlocation() {

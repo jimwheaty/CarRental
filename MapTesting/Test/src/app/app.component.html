@@ -87,23 +87,38 @@
     </form>
   </div>
   <div class="getlocation">
-      <button (click)="ongetlocation()">Βρες με !</button>
+      <button (click)="ongetlocation()">Που είμαι;</button>
   </div>
   <div class="offers">
     <button (click)="onFilter()">Προσφορές</button>
   </div>
   
   <div class="profile" *ngIf="loggedIn==true">
-    <button>Προφίλ<!-- {{user.name}} --></button>
+    <button (click)="onProfile()">Προφίλ<!-- {{user.name}} --></button>
   </div>
   <div class="profile" *ngIf="loggedIn==false">
-    <button >Έχετε λογαριασμό? Δημιουργήστε τώρα!</button>
+    <button (click)="loginWindow=!loginWindow">Έχετε λογαριασμό? Δημιουργήστε εδώ</button>
+  </div>
+  <div class="profileWindow" *ngIf="profileWindow==true">
+    πεδίο 1
+    <br>
+    πεδίο 42
+    <br>
+    <button (click)="loggedIn=false; profileWindow=false">Αποσυνδέσου</button>
+  </div>
+  <div class="profileWindow" *ngIf="loginWindow==true">
+    <input [(ngModel)]="username" type="text" placeholder="Όνομα: πχ. Takis97">
+    <br>
+    <input [(ngModel)]="password" type="password" placeholder="Κωδικός: πχ. 42islife">
+    <br>
+    <button (click)="loggedIn=true; loginWindow=false; onLogInButton()">Συνδέσου</button>
+    ή
+    <button (click)="loggedIn=true; loginWindow=false">Κάνε εγγραφή</button>
+    
   </div>
 </div>
 
-
-
-<div *ngIf="uploadWindow==true" id="uploadEntry" class="uploadEntry">
+<div *ngIf="uploadWindow" id="uploadEntry" class="uploadEntry">
   <button (click)="onCloseUploadWindow()">Κλείσε</button>
   <br><br>
   <input [(ngModel)]="form_name" placeholder="name" type="text" />
@@ -114,7 +129,7 @@
 </div>
 
 <div class="uploadButton">
-  <button *ngIf="uploadWindow==false"(click)="onOpenUploadWindow()" >Προσθήκη αυτοκινήτου εδώ !</button>
+  <button *ngIf="!uploadWindow  && loggedIn"(click)="onOpenUploadWindow()" >Προσθήκη αυτοκινήτου εδώ !</button>
 </div>
 
 <div class="pointer"></div>
