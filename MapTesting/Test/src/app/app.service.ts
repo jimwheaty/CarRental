@@ -19,11 +19,11 @@ export class appService {
 
   login(user: User): Observable<User>{
     //return this.http.get<Point[]>(this.API_END_POINT);
-    return this.http.post<User>(this.loginAPI_END_POINT, User);
+    return this.http.post<User>(this.loginAPI_END_POINT, user);
     //return this.http.get<Point[]>(this.url);
   }
   signup(user: User): Observable<User> {
-    return this.http.post<User>(this.signupAPI_END_POINT, User);
+    return this.http.post<User>(this.signupAPI_END_POINT, user);
   }
 
   getPoints(): Observable<mapPoint[]>{

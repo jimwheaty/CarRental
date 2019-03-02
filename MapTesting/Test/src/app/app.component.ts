@@ -238,11 +238,12 @@ export class AppComponent implements OnInit {
   }
   onSignUpButton() {
     //check if username is unique
-    let user = {username:this.username, password:this.password};
+    let user = new User(this.username, this.password);
     this.appservice.signup(user).subscribe(user => this.signupResponse.push(user));
   }
   onLogInButton() {
-    let user = {username:this.username, password:this.password};
+    // let user = {username:this.username, password:this.password};
+    let user = new User(this.username, this.password);
     this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
   }
 
