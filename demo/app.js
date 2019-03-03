@@ -53,6 +53,12 @@ app.post('/observatory/api/login', function(req, res){
         "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
      }])
 });
+app.get('/observatory/api/logout', function(req, res){
+    res.status(200).send([{
+        "message":"logout successful"
+    }])
+    console.log("logout token=",req.header("x-observatory-auth"))
+});
 app.post('/observatory/api/signup', function(req, res){
     console.log(req.body);
     res.status(200).send([{

@@ -236,7 +236,13 @@ export class AppComponent implements OnInit {
   onProfile() {
     this.profileWindow = !this.profileWindow;
   }
-  removeUser() {
+  onLogout() {
+    this.appservice.logout()
+    .subscribe((d:{message: string}[]) => {
+      d.forEach(datum => {
+        console.log("logout message=",datum.message);
+      });
+    })
     localStorage.removeItem('token');
   }
   onSignUpButton() {

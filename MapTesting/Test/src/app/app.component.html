@@ -104,7 +104,7 @@
     <br>
     πεδίο 42
     <br>
-    <button (click)="loggedIn=false; profileWindow=false; tokenValue=null; removeUser();">Αποσυνδέσου</button>
+    <button (click)="loggedIn=false; profileWindow=false; tokenValue=null; onLogout();">Αποσυνδέσου</button>
   </div>
   <div class="profileWindow" *ngIf="loginWindow==true">
     <input [(ngModel)]="username" type="text" placeholder="Όνομα: πχ. Takis97">

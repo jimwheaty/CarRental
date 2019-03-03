@@ -15,12 +15,23 @@ export class appService {
 
   private loginAPI_END_POINT = 'http://localhost:3000/observatory/api/login';
   private signupAPI_END_POINT = 'http://localhost:3000/observatory/api/signup';
+  private logoutAPI_END_POINT = 'http://localhost:3000/observatory/api/logout';
   //private url = '/assets/points.json'
 
   login(user: User): Observable<any>{
     //return this.http.get<Point[]>(this.API_END_POINT);
     return this.http.post<any>(this.loginAPI_END_POINT, user);
     //return this.http.get<Point[]>(this.url);
+  }
+  logout(): Observable<any>{
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      })
+    }
+    return this.http.get<any>(this.logoutAPI_END_POINT,httpOptions)
   }
   signup(user: User): Observable<any> {
     return this.http.post<any>(this.signupAPI_END_POINT, user);
@@ -33,7 +44,7 @@ export class appService {
   }
   upload(point: mapPoint): Observable<mapPoint> {
     let token = localStorage.getItem("token")
-    const httpOptions = {
+    var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
         'X-OBSERVATORY-AUTH': token
