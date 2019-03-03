@@ -15,7 +15,7 @@ import { I18nContext } from '@angular/compiler/src/render3/view/i18n/context';
 export class AppComponent implements OnInit {
   takishome:any;
   key:any;
-  tokenValue:any;
+  // tokenValue:any;
   loggedIn:boolean=false;
 
   geolocationPosition:any;
@@ -139,8 +139,8 @@ export class AppComponent implements OnInit {
     this.getMyPois();
   }
   isLoggedIn() {
-    this.tokenValue = localStorage.getItem("token");
-    if (this.tokenValue ===null) {
+    let tokenValue = localStorage.getItem("token");
+    if (tokenValue ===null) {
       this.loggedIn=false;
     } 
     else {
@@ -237,39 +237,71 @@ export class AppComponent implements OnInit {
     this.profileWindow = !this.profileWindow;
   }
   onLogout() {
+    // profileWindow=false; tokenValue=null;
     this.appservice.logout()
     .subscribe((d:{message: string}[]) => {
       d.forEach(datum => {
-        console.log("logout message=",datum.message);
-      });
+        if (datum.message=="logout successful") {
+          // console.log("logout message=",datum.message);
+          localStorage.removeItem('token');
+          document.getElementById("profileWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
+          setTimeout(function() {document.getElementById('profileWindow').innerHTML='';},4000);
+          this.loggedIn=false; 
+        }
+        else {
+          document.getElementById("profileWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
+          setTimeout(function() {document.getElementById('profileWindow').innerHTML='';},4000);
+        }
+      })
     })
-    localStorage.removeItem('token');
   }
   onSignUpButton() {
+    // loggedIn=true; loginWindow=false; 
     let user = new User(this.username, this.password);
     // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
     this.appservice.signup(user)
-    .subscribe((d:{success: Boolean, message: string, token:string}[]) => {
+    .subscribe((d:{success: string, message: string, token:string}[]) => {
       d.forEach(datum => {
-        // console.log("token=",datum.token);
-        this.key = "token"
-        localStorage.setItem(this.key, datum.token)
-        let item = localStorage.getItem(this.key)
-        console.log("saved token=",item);
+        if (datum.success=="true") {
+          // console.log("token=",datum.token);
+          this.key = "token"
+          localStorage.setItem(this.key, datum.token)
+          let item = localStorage.getItem(this.key)
+          console.log("saved token=",item);
+          document.getElementById("loginWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
+          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+          this.loggedIn=true; 
+          // this.loginWindow=false; 
+        }
+        else {
+          document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
+          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+        }
       });
     })
   }
   onLogInButton() {
+    // loggedIn=true; loginWindow=false; 
     let user = new User(this.username, this.password);
     // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
     this.appservice.login(user)
-    .subscribe((d:{success: Boolean, message: string, token:string}[]) => {
+    .subscribe((d:{success: string, message: string, token:string}[]) => {
       d.forEach(datum => {
-        // console.log("token=",datum.token);
-        this.key = "token"
-        localStorage.setItem(this.key, datum.token)
-        let item = localStorage.getItem(this.key)
-        console.log("saved token=",item);
+        if (datum.success=="true") {
+          // console.log("token=",datum.token);
+          this.key = "token"
+          localStorage.setItem(this.key, datum.token)
+          let item = localStorage.getItem(this.key)
+          console.log("saved token=",item);
+          document.getElementById("loginWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
+          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+          this.loggedIn=true; 
+          // this.loginWindow=false; 
+        }
+        else {
+          document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
+          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+        }
       });
     })
   }

@@ -27,6 +27,7 @@ app.use(cors());
 
 //app.use('/', routes);
 app.get('/observatory/api/', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     //res.json({"x":"38.050855", "y":"23.819017"})
     console.log("4242");
     res.json([{
@@ -42,11 +43,13 @@ app.get('/observatory/api/', function(req, res){
 
 });
 app.post('/observatory/api/upload', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
     console.log("token=",req.header("x-observatory-auth"))
     res.status(200).send({"message": "Data recieved"})
 });
 app.post('/observatory/api/login', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
     res.status(200).send([{
         "success":"true",
@@ -54,12 +57,14 @@ app.post('/observatory/api/login', function(req, res){
      }])
 });
 app.get('/observatory/api/logout', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     res.status(200).send([{
         "message":"logout successful"
     }])
     console.log("logout token=",req.header("x-observatory-auth"))
 });
 app.post('/observatory/api/signup', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
     res.status(200).send([{
         "success":"true",

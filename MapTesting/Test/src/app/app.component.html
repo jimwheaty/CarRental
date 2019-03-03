@@ -99,22 +99,23 @@
   <div class="profile" *ngIf="loggedIn==false">
     <button (click)="loginWindow=!loginWindow">Έχετε λογαριασμό? Δημιουργήστε εδώ</button>
   </div>
-  <div class="profileWindow" *ngIf="profileWindow==true">
+  <div id="profileWindow" class="profileWindow" *ngIf="profileWindow==true">
     πεδίο 1
     <br>
     πεδίο 42
     <br>
-    <button (click)="loggedIn=false; profileWindow=false; tokenValue=null; onLogout();">Αποσυνδέσου</button>
+    <button (click)="onLogout();">Αποσυνδέσου</button>
   </div>
-  <div class="profileWindow" *ngIf="loginWindow==true">
+  <div id="loginWindow" class="profileWindow" *ngIf="loginWindow==true">
     <input [(ngModel)]="username" type="text" placeholder="Όνομα: πχ. Takis97">
     <br>
     <input [(ngModel)]="password" type="password" placeholder="Κωδικός: πχ. 42islife">
     <br>
-    <button (click)="loggedIn=true; loginWindow=false; onLogInButton()">Συνδέσου</button>
+    <button (click)="onLogInButton()">Συνδέσου</button>
     ή
-    <button (click)="loggedIn=true; loginWindow=false; onSignUpButton()">Κάνε εγγραφή</button>
-    
+    <button (click)="onSignUpButton()">Κάνε εγγραφή</button>
+    <p id="signupErrorMes" style="color:red"></p>
+    <p id="signupSuccessMes" style="color:green"></p>
   </div>
 </div>
 
