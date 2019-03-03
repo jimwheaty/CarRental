@@ -14,6 +14,8 @@ import { I18nContext } from '@angular/compiler/src/render3/view/i18n/context';
 })
 export class AppComponent implements OnInit {
   takishome:any;
+  key:any;
+  tokenValue:any;
   loggedIn:boolean=false;
 
   geolocationPosition:any;
@@ -31,7 +33,8 @@ export class AppComponent implements OnInit {
   
   public uploadResponse = [];
   public signupResponse = [];
-  public loginResponse = [];
+  public loginResponse:{success: Boolean, message: string, token:string}[]=[];
+  response:{success: Boolean, message: string, token:string}
 
   public entryInfo:any;
   select:any;
@@ -136,8 +139,8 @@ export class AppComponent implements OnInit {
     this.getMyPois();
   }
   isLoggedIn() {
-    let tokenValue = localStorage.getItem("token");
-    if (tokenValue ===null) {
+    this.tokenValue = localStorage.getItem("token");
+    if (this.tokenValue ===null) {
       this.loggedIn=false;
     } 
     else {
@@ -169,17 +172,14 @@ export class AppComponent implements OnInit {
   }
   
   getMyPois() {
-    console.log("42-5");
     // this.pointService.getPoints()
     //   .subscribe(data => this.points = data)
     this.appservice.getPoints()
       .toPromise()
       .then((d: {x:number, y:number, name:string, info:string}[]) => {
-        console.log("42");
       
       //let max = Math.max(...d.map(dd=>parseFloat(dd.value)));
       d.forEach(datum => {
-        console.log("1");
         console.log(datum.x,datum.y);
         let feature = new ol.Feature(
           new ol.geom.Point(ol.proj.fromLonLat([+datum.x, +datum.y]))
@@ -236,15 +236,36 @@ export class AppComponent implements OnInit {
   onProfile() {
     this.profileWindow = !this.profileWindow;
   }
+  removeUser() {
+    localStorage.removeItem('token');
+  }
   onSignUpButton() {
-    //check if username is unique
     let user = new User(this.username, this.password);
-    this.appservice.signup(user).subscribe(user => this.signupResponse.push(user));
+    // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
+    this.appservice.signup(user)
+    .subscribe((d:{success: Boolean, message: string, token:string}[]) => {
+      d.forEach(datum => {
+        // console.log("token=",datum.token);
+        this.key = "token"
+        localStorage.setItem(this.key, datum.token)
+        let item = localStorage.getItem(this.key)
+        console.log("saved token=",item);
+      });
+    })
   }
   onLogInButton() {
-    // let user = {username:this.username, password:this.password};
     let user = new User(this.username, this.password);
-    this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
+    // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
+    this.appservice.login(user)
+    .subscribe((d:{success: Boolean, message: string, token:string}[]) => {
+      d.forEach(datum => {
+        // console.log("token=",datum.token);
+        this.key = "token"
+        localStorage.setItem(this.key, datum.token)
+        let item = localStorage.getItem(this.key)
+        console.log("saved token=",item);
+      });
+    })
   }
 
   ongetlocation() {

@@ -26,7 +26,7 @@ app.use(cors());
 // app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/', routes);
-app.get('/', function(req, res){
+app.get('/observatory/api/', function(req, res){
     //res.json({"x":"38.050855", "y":"23.819017"})
     console.log("4242");
     res.json([{
@@ -41,15 +41,25 @@ app.get('/', function(req, res){
     // res.send('hel42lo world');
 
 });
-app.post('/upload', function(req, res){
+app.post('/observatory/api/upload', function(req, res){
     console.log(req.body);
+    console.log("token=",req.header("x-observatory-auth"))
     res.status(200).send({"message": "Data recieved"})
 });
-app.post('/login', function(req, res){
+app.post('/observatory/api/login', function(req, res){
     console.log(req.body);
-    res.status(200).send({"message": "Data recieved"})
+    res.status(200).send([{
+        "success":"true",
+        "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
+     }])
 });
-
+app.post('/observatory/api/signup', function(req, res){
+    console.log(req.body);
+    res.status(200).send([{
+        "success":"true",
+        "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
+     }])
+});
 app.listen(PORT, function(){
     console.log("Server running on localhost:" + PORT);
 });
