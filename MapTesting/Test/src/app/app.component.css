@@ -29,6 +29,14 @@
     left:40px;
     background: white;
 }
+.header .searchButton{
+    position:absolute;
+    width: max-content;
+    top:100px;
+    left:300px;
+    background: #4285F4;
+    border-color: #4285F4;
+}
 
 .header .search{
     position: absolute;

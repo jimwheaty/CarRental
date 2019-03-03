@@ -5,6 +5,7 @@ import { stringify } from 'querystring';
 import { appService } from './app.service';
 import { mapPoint } from './mappoint';
 import { User } from './user';
+import {getLength} from 'ol/sphere.js';
 import { I18nContext } from '@angular/compiler/src/render3/view/i18n/context';
 
 @Component({
@@ -100,7 +101,7 @@ export class AppComponent implements OnInit {
         this.vectorLayer
       ],
       view: new ol.View({
-        center: ol.proj.fromLonLat([23.68, 38]),
+        center: ol.proj.fromLonLat([24, 38.3]),
         zoom: 7
       })
     });
@@ -174,6 +175,40 @@ export class AppComponent implements OnInit {
   getMyPois() {
     // this.pointService.getPoints()
     //   .subscribe(data => this.points = data)
+    let map=this.map
+    let geoDist:any;
+    let geoLat:any;
+    let geoLng:any;
+    map.once('postrender', function() {
+      let coordinates:ol.Coordinate = map.getView().getCenter();
+      let lonlat4326 = ol.proj.toLonLat(coordinates,'EPSG:4326');
+      let lonlat3857 = ol.proj.toLonLat(coordinates,'EPSG:3857');
+      
+      geoLng=lonlat3857[0];
+      geoLat=lonlat3857[1];
+      let pixel=map.getPixelFromCoordinate(coordinates);
+      let ourPixel:[number,number] = [pixel[0],0];
+      let ourCoordinates = map.getCoordinateFromPixel(ourPixel);
+      // long, lat of the top-center pixel
+      let ourLonlat4326 = ol.proj.toLonLat(ourCoordinates,'EPSG:4326');
+      // let geoDist=Math.sqrt(Math.pow(coordinates[0]-ourCoordinates[0],2)+Math.pow(coordinates[1]-ourCoordinates[1],2));
+      this.distanceBetweenPoints = function(latlng1, latlng2){
+        var line = new ol.geom.LineString([latlng1, latlng2]);
+        return Math.round(line.getLength() * 100) / 100;
+      };
+      this.formatDistance = function(length) {
+        if (length >= 1000) {
+            length = (Math.round(length / 1000 * 100) / 100);
+        } else {
+            length =  Math.round(length);
+        }
+        return length;
+      }
+      // ol.proj.transform([pos.longitude, pos.latitude], 'EPSG:4326', 'EPSG:3857'))
+      geoDist=this.formatDistance(this.distanceBetweenPoints(lonlat4326,ourLonlat4326))
+      console.log("distance in km from top pixel=",geoDist);
+    });
+
     this.appservice.getPoints()
       .toPromise()
       .then((d: {x:number, y:number, name:string, info:string}[]) => {
@@ -188,7 +223,7 @@ export class AppComponent implements OnInit {
         this.vectorSource.addFeature(feature);
         feature.setProperties({name:datum.name,info:datum.info});
 
-    });
+      });
     })
   }
   // getMyPois() {
@@ -204,7 +239,7 @@ export class AppComponent implements OnInit {
     // alert('poi save request');
 
     let coordinates = this.map.getView().getCenter();
-    let lonlat = ol.proj.toLonLat(coordinates);
+    let lonlat = ol.proj.toLonLat(coordinates,'EPSG:4326');
     // let object = {
     //   x: lonlat[0],
     //   y: lonlat[1],
@@ -223,7 +258,7 @@ export class AppComponent implements OnInit {
     console.log("response from server=", this.uploadResponse)
     this.uploadWindow=false;
   }
-
+  
   onCloseInfo() {
     this.infoWindow = false;
   }
@@ -235,6 +270,9 @@ export class AppComponent implements OnInit {
   }
   onProfile() {
     this.profileWindow = !this.profileWindow;
+  }
+  onOpenUploadWindow() {
+    this.uploadWindow = true;
   }
   onLogout() {
     // profileWindow=false; tokenValue=null;
@@ -321,7 +359,7 @@ export class AppComponent implements OnInit {
       
     }
   }
-  onOpenUploadWindow() {
-    this.uploadWindow = true;
+  onFilter(){
+
   }
 }

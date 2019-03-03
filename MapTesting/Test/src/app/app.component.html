@@ -69,8 +69,6 @@
       </datalist>
       <!-- <input [(ngModel)]="form_filter_tags" placeholder="Επιπλέον" list="Tags" name="Tags" /> -->
       <button (click)="onTagList()">Επιπλέον...</button>
-
-      <button (click)="onFilter()">Προσθήκη</button>
       
       <br>
       <div *ngIf="tagListWindow==true" class="tagList">
@@ -86,11 +84,12 @@
       </div>
     </form>
   </div>
+  <button class="searchButton" (click)="onFilter()">Αναζήτηση σε αυτή την περιοχή</button>
   <div class="getlocation">
       <button (click)="ongetlocation()">Που είμαι;</button>
-  </div>
-  <div class="offers">
-    <button (click)="onFilter()">Προσφορές</button>
+    </div>
+    <div class="offers">
+      <button (click)="onFilter()">Προσφορές</button>
   </div>
   
   <div class="profile" *ngIf="loggedIn==true">
