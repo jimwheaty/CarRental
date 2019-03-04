@@ -42,6 +42,48 @@ app.get('/observatory/api/', function(req, res){
     // res.send('hel42lo world');
 
 });
+app.get('/observatory/api/prices', function(req, res){
+    console.log("parameters:",req.query)
+    res.send([{start:0, count:2, total:3, prices:[
+        {price:42,date:"takis", productName:"takis2",productId:42,
+          productTags:["takis3","takis4"],shopId:"takis5",shopName:"takis6",
+          shopTags:["mhxanhkafe","tavli"],shopAddress:"konta"},
+        {price:43,date:"takis7", productName:"takis8",productId:43,
+          productTags:["takis3","takis4"],shopId:"0",shopName:"takis6",
+          shopTags:["mhxanhkafe","tavli"],shopAddress:"konta"}
+    ]}])
+})
+app.post('/observatory/api/prices', function(req, res){
+    // console.log("parameters:",req.query)
+    res.send({message:"ok!"})
+})
+app.get('/observatory/api/shops/takis5',function(req, res){
+    console.log("edw einai o takis5")
+    res.send([
+        {
+            id:"takis5",name:"takis home",address:"string",lng:23.818984,
+            lat:38.050653,tags:[],withdrawn:1
+        }
+    ])
+})
+app.get('/observatory/api/shops/takis50',function(req, res){
+    console.log("edw einai o takis50")
+    res.send([
+        {
+            id:"takis50",name:"pnigika home",address:"string",lng:24,
+            lat:38,tags:[],withdrawn:1
+        }
+    ])
+})
+app.get('/observatory/api/shops/0',function(req, res){
+    console.log("edw einai o 0")
+    res.send([
+        {
+            id:"0",name:"pnigika home",address:"string",lng:24,
+            lat:38,tags:["42"],withdrawn:1
+        }
+    ])
+})
 app.post('/observatory/api/upload', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
@@ -59,17 +101,48 @@ app.post('/observatory/api/login', function(req, res){
 app.get('/observatory/api/logout', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     res.status(200).send([{
-        "message":"logout successful"
+        "message":"OK"
     }])
     console.log("logout token=",req.header("x-observatory-auth"))
 });
 app.post('/observatory/api/signup', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
-    res.status(200).send([{
+    res.send([{
         "success":"true",
         "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
      }])
+});
+let uploadProductResultId=42;
+let uploadShopResultId=42;
+
+app.get('/observatory/api/products',function(req, res){
+    console.log("edw einai to product1")
+    res.send([
+        {start:0,count:1,total:1,products:[
+            {id:"42",name:"e",description:"string",
+            category:"string",tags:[],withdrawn:1}]
+        }
+    ])
+})
+app.get('/observatory/api/shops',function(req, res){
+    console.log("edw einai o shop1")
+    res.send([
+        {start:0,count:1,total:1,shops:[
+            {id:"42",name:"pnigika home",address:"string",lng:24,
+            lat:38,tags:[],withdrawn:1}]
+        }
+    ])
+})
+app.post('/observatory/api/products', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    console.log(req.body);
+    res.send({message:"successful!"})
+});
+app.post('/observatory/api/shops', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    console.log(req.body);
+    res.send({message:"successful!"})
 });
 app.listen(PORT, function(){
     console.log("Server running on localhost:" + PORT);

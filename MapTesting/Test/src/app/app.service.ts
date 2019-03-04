@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { mapPoint } from './mappoint';
 import { User } from './user';
 import { Observable } from 'rxjs';
@@ -16,6 +16,9 @@ export class appService {
   private loginAPI_END_POINT = 'http://localhost:3000/observatory/api/login';
   private signupAPI_END_POINT = 'http://localhost:3000/observatory/api/signup';
   private logoutAPI_END_POINT = 'http://localhost:3000/observatory/api/logout';
+  private pricesAPI_END_POINT = 'http://localhost:3000/observatory/api/prices';
+  private shopsAPI_END_POINT = 'http://localhost:3000/observatory/api/shops';
+  private productsAPI_END_POINT = 'http://localhost:3000/observatory/api/products';
   //private url = '/assets/points.json'
 
   login(user: User): Observable<any>{
@@ -37,12 +40,62 @@ export class appService {
     return this.http.post<any>(this.signupAPI_END_POINT, user);
   }
 
-  getPoints(): Observable<mapPoint[]>{
+  getPoints(data:any): Observable<any[]>{
     //return this.http.get<Point[]>(this.API_END_POINT);
-    return this.http.get<any>(this.API_END_POINT);
+    let httpParams = new HttpParams();
+    Object.keys(data).forEach(function (key) {
+      httpParams = httpParams.append(key, data[key]);
+    });
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      }),
+      params:httpParams
+    }
+    // console.log(httpParams.keys)
+    return this.http.get<any>(this.pricesAPI_END_POINT,httpOptions);
     //return this.http.get<Point[]>(this.url);
   }
-  upload(point: mapPoint): Observable<mapPoint> {
+  getShops(data:any): Observable<any[]>{
+    //return this.http.get<Point[]>(this.API_END_POINT);
+    let httpParams = new HttpParams();
+    Object.keys(data).forEach(function (key) {
+      httpParams = httpParams.append(key, data[key]);
+    });
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      }),
+      params:httpParams
+    }
+    // console.log(httpParams.keys)
+    return this.http.get<any>(this.shopsAPI_END_POINT,httpOptions);
+    //return this.http.get<Point[]>(this.url);
+  }
+  getProducts(data:any): Observable<any[]>{
+    //return this.http.get<Point[]>(this.API_END_POINT);
+    let httpParams = new HttpParams();
+    Object.keys(data).forEach(function (key) {
+      httpParams = httpParams.append(key, data[key]);
+    });
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      }),
+      params:httpParams
+    }
+    // console.log(httpParams.keys)
+    return this.http.get<any>(this.productsAPI_END_POINT,httpOptions);
+    //return this.http.get<Point[]>(this.url);
+  }
+  getShopInfo(id:string): Observable<any>{
+    // console.log(httpParams.keys)
     let token = localStorage.getItem("token")
     var httpOptions = {
       headers: new HttpHeaders({
@@ -50,6 +103,36 @@ export class appService {
         'X-OBSERVATORY-AUTH': token
       })
     }
-    return this.http.post<mapPoint>(this.uploadAPI_END_POINT, point, httpOptions);
+    return this.http.get<any>(this.shopsAPI_END_POINT+'/'+id,httpOptions);
+  }
+  uploadCar(data:any){
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      'X-OBSERVATORY-AUTH': token
+    })
+  }
+    return this.http.post<any>(this.productsAPI_END_POINT, data,httpOptions);
+  }
+  uploadShop(data:any){
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      })
+    }
+    return this.http.post<any>(this.shopsAPI_END_POINT, data,httpOptions);
+  }
+  uploadPrice(data:any){
+    let token = localStorage.getItem("token")
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'X-OBSERVATORY-AUTH': token
+      })
+    }
+    return this.http.post<any>(this.pricesAPI_END_POINT, data,httpOptions);
   }
 }

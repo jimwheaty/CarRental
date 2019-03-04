@@ -67,10 +67,15 @@
     left:0px;
     bottom:0px;
     width: 400px;
+    height: max-content;
     overflow-y: auto;
     background: white;
 }
-
+/* .entryInfo .EntryInfoUploadCar{
+    position: absolute;
+    height: max-content;
+    background:white;
+} */
 .entryInfo .exodia {
     position: absolute;
     right:0px;
@@ -91,13 +96,14 @@
 
 .uploadEntry{
     position:absolute;
-    height:150px;
+    height:max-content;
     background: white;
     background-size: cover;
     padding:20px;
-    bottom:20%;
+    bottom:10%;
     right:30%;
-    left:30%;
+    left:40px;
+    max-width: 300px;
     border-radius:6px;
 }
 

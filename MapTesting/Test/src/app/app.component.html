@@ -13,6 +13,49 @@
     <li>{{entryInfo.info}}</li>
   </ul>
   <h2>Διεύθυνση: __________________</h2>
+  <button (click)="onEntryInfoUploadCar=!onEntryInfoUploadCar">Προσθήκη αυτοκινήτου</button>
+  <div class="EntryInfoUploadCar" *ngIf="onEntryInfoUploadCar">
+    <input [(ngModel)]="entryInfoWindowCarPrice" placeholder="Τιμή ενοικίασης: πχ. '79.1'" type="text" required/>
+    <br>
+    <br>
+    <input [(ngModel)]="entryInfoWindowCarName" placeholder="Μάρκα και μοντέλο: πχ. Ford Focus" type="text" required/>
+    <br>
+    <br>
+    <input [(ngModel)]="entryInfoWindowCarDescription"  placeholder="Σύντομη περιγραφή(προαιρετικό)" type="text" />
+    <br>
+    <br>
+    <input [(ngModel)]="entryInfoWindowCarCategory" placeholder="Κατηγορία: πχ. Μικρό" list="Categories" name="Categories" required/>
+    <datalist id="Categories">
+      <option value="Μικρό"></option>
+      <option value="Μεσαίο"></option>
+      <option value="Estate"></option>
+      <option value="Επιβατικό"></option>
+      <option value="Μεγάλο"></option>
+      <option value="Premium"></option>
+    </datalist>
+    <br><br>
+    <button (click)="entryInfoWindowCarTagList=!entryInfoWindowCarTagList" >Επιπλέον...</button>
+    <div *ngIf="entryInfoWindowCarTagList==true" class="tagList">
+      <ul>
+        <input type="checkbox" [(ngModel)]="checkbox11"> GPS-navigation
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox12"> Bluetooth connectivity
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox13"> USB for phones/sticks
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox14"> Χιονολάστιχα
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox15"> Diesel
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox16"> Παραλαβή+Παράδοση γεμάτο ρεζερβουάρ
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox17"> 4x4
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox18"> Auto
+      </ul>
+    </div>
+    <button (click)="onSaveCar()">Αποθήκευση</button>
+  </div>
   <div class="image">
     <h2 style="margin-left:20px">Αυτοκίνητα</h2>
     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
@@ -41,54 +84,59 @@
 -->
 
 <div class="header" *ngIf="infoWindow==false">
-  <div class="search">
-    <form autocomplete="on">
-      <input [(ngModel)]="form_filter_name" placeholder="Όνομα: πχ. Ford Focus" list="Names" name="Names" />
-      <datalist id="Names">
-        <option value="Ford fiesta">
-        <option value="Citroen C1">
-        <option value="Opel Corsa">
-        <option value="Renault Captur">
-        <option value="Opel astra">
-        <option value="Mercedes-Benz A-Class"></option>
-        <option value="Nissan Qashqai"></option>
-        <option value="Volkswagen Touran"></option>
-        <option value="Volkswagen Caravelle"></option>
-        <option value="Opel Insignia"></option>
-        <option value="Volkswagen Passat"></option>
-        <option value="Audi A6"></option>
-      </datalist>
-      <input [(ngModel)]="form_filter_category" placeholder="Κατηγορία: πχ. Μικρό" list="Categories" name="Categories" />
-      <datalist id="Categories">
-        <option value="Μικρό"></option>
-        <option value="Μεσαίο"></option>
-        <option value="Estate"></option>
-        <option value="Επιβατικό"></option>
-        <option value="Μεγάλο"></option>
-        <option value="Premium"></option>
-      </datalist>
-      <!-- <input [(ngModel)]="form_filter_tags" placeholder="Επιπλέον" list="Tags" name="Tags" /> -->
-      <button (click)="onTagList()">Επιπλέον...</button>
-      
-      <br>
-      <div *ngIf="tagListWindow==true" class="tagList">
-        <ul>
-          <input type="checkbox" > checkbox 1
-          <br>
-          <input type="checkbox"> checkbox 2
-          <br>
-          <input type="checkbox"> checkbox 3
-          <br>
-          <input type="checkbox"> checkbox 4
-        </ul>
-      </div>
-    </form>
-  </div>
-  <button class="searchButton" (click)="onFilter()">Αναζήτηση σε αυτή την περιοχή</button>
-  <div class="getlocation">
-      <button (click)="ongetlocation()">Που είμαι;</button>
+  <div class="search" >
+    <input [(ngModel)]="form_filter_name" placeholder="Όνομα: πχ. Ford Focus" list="Names" name="Names" />
+    <datalist id="Names">
+      <option value="Ford fiesta">
+      <option value="Citroen C1">
+      <option value="Opel Corsa">
+      <option value="Renault Captur">
+      <option value="Opel astra">
+      <option value="Mercedes-Benz A-Class"></option>
+      <option value="Nissan Qashqai"></option>
+      <option value="Volkswagen Touran"></option>
+      <option value="Volkswagen Caravelle"></option>
+      <option value="Opel Insignia"></option>
+      <option value="Volkswagen Passat"></option>
+      <option value="Audi A6"></option>
+    </datalist>
+    <input [(ngModel)]="form_filter_category" placeholder="Κατηγορία: πχ. Μικρό" list="Categories" name="Categories" />
+    <datalist id="Categories">
+      <option value="Μικρό"></option>
+      <option value="Μεσαίο"></option>
+      <option value="Estate"></option>
+      <option value="Επιβατικό"></option>
+      <option value="Μεγάλο"></option>
+      <option value="Premium"></option>
+    </datalist>
+    <!-- <input [(ngModel)]="form_filter_tags" placeholder="Επιπλέον" list="Tags" name="Tags" /> -->
+    <button (click)="this.tagListWindow = !this.tagListWindow; searchButton=!searchButton">Επιπλέον...</button>      
+    <br>
+    <div *ngIf="tagListWindow==true" class="tagList">
+      <ul>
+        <input type="checkbox" [(ngModel)]="checkbox21"> GPS-navigation
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox22"> Bluetooth connectivity
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox23"> USB for phones/sticks
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox24"> Χιονολάστιχα
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox25"> Diesel
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox26"> Παραλαβή+Παράδοση γεμάτο ρεζερβουάρ
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox27"> 4x4
+        <br>
+        <input type="checkbox" [(ngModel)]="checkbox28"> Auto
+      </ul>
     </div>
-    <div class="offers">
+  </div>
+  <button class="searchButton" *ngIf="searchButton==true"(click)="onFilter()">Αναζήτηση σε αυτή την περιοχή</button>
+  <div class="getlocation">
+    <button (click)="ongetlocation()">Που είμαι;</button>
+  </div>
+  <div class="offers">
       <button (click)="onFilter()">Προσφορές</button>
   </div>
   
@@ -119,19 +167,66 @@
 </div>
 
 <div *ngIf="uploadWindow" id="uploadEntry" class="uploadEntry">
-  <button (click)="onCloseUploadWindow()">Κλείσε</button>
+  <button (click)="onCloseUploadWindow()">Ακύρωση</button>
+  <br>
+  <br>
+  Ημερομηνία ενοικίασης <input [(ngModel)]="uploadWindowDateFrom" type="date" autofocus required/>
+  <br>
+  <br>
+  Ημερομηνία επιστροφής <input [(ngModel)]="uploadWindowDateTo" type="date" required/>
+  <br>
+  <br>
+  <input [(ngModel)]="uploadWindowPrice" placeholder="Τιμή ενοικίασης: πχ. '79.1'" type="text" required/>
+  <br>
+  <br>
+  <input [(ngModel)]="uploadWindowCarName" placeholder="Μάρκα και μοντέλο: πχ. Ford Focus" type="text" required/>
+  <br>
+  <br>
+  <input [(ngModel)]="uploadWindowCarDescription"  placeholder="Σύντομη περιγραφή(προαιρετικό)" type="text" />
+  <br>
+  <br>
+  <input [(ngModel)]="uploadWindowCarCategory" placeholder="Κατηγορία: πχ. Μικρό" list="Categories" name="Categories" required/>
+  <datalist id="Categories">
+    <option value="Μικρό"></option>
+    <option value="Μεσαίο"></option>
+    <option value="Estate"></option>
+    <option value="Επιβατικό"></option>
+    <option value="Μεγάλο"></option>
+    <option value="Premium"></option>
+  </datalist>
   <br><br>
-  <input [(ngModel)]="form_name" placeholder="name" type="text" />
+  <button (click)="uploadWindowCarTagList=!uploadWindowCarTagList" >Επιπλέον...</button>
+  <div *ngIf="uploadWindowCarTagList==true" class="tagList">
+    <ul>
+      <input type="checkbox" [(ngModel)]="checkbox1"> GPS-navigation
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox2"> Bluetooth connectivity
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox3"> USB for phones/sticks
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox4"> Χιονολάστιχα
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox5"> Diesel
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox6"> Παραλαβή+Παράδοση γεμάτο ρεζερβουάρ
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox7"> 4x4
+      <br>
+      <input type="checkbox" [(ngModel)]="checkbox8"> Auto
+    </ul>
+  </div>
   <br><br>
-  <input [(ngModel)]="form_value"  placeholder="value" type="number" />
+  <input [(ngModel)]="uploadWindowShopName" placeholder="Όνομα καταστήματος: πχ. Avis" type="text" required/>
   <br><br>
+  <input [(ngModel)]="uploadWindowShopaddress"  placeholder="Διεύθυνση(προαιρετικό)" type="text" required/>
+  <br> <br>
   <button (click)="onSave()">Αποθήκευση</button>
 </div>
 
 <div class="uploadButton">
-  <button *ngIf="!uploadWindow  && loggedIn"(click)="onOpenUploadWindow()" >Προσθήκη αυτοκινήτου εδώ !</button>
+  <button *ngIf="!uploadWindow  && loggedIn"(click)="onOpenUploadWindow()" >Νέα προσθήκη εδώ !</button>
 </div>
 
 <div class="pointer"></div>
 
-<div class="display-form"  [ngStyle]="{left:form_left + 'px',top:form_top+'px'}" >{{display_name}} {{display_value}}</div>
+<div class="display-form"  [ngStyle]="{left:form_left + 'px',top:form_top+'px'}" >{{display_name}} {{display_rating}} {{display_count}}</div>
