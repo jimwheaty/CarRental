@@ -46,16 +46,8 @@ export class appService {
     Object.keys(data).forEach(function (key) {
       httpParams = httpParams.append(key, data[key]);
     });
-    let token = localStorage.getItem("token")
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'X-OBSERVATORY-AUTH': token
-      }),
-      params:httpParams
-    }
     // console.log(httpParams.keys)
-    return this.http.get<any>(this.pricesAPI_END_POINT,httpOptions);
+    return this.http.get<any>(this.pricesAPI_END_POINT,{params:httpParams});
     //return this.http.get<Point[]>(this.url);
   }
   getShops(data:any): Observable<any[]>{
@@ -64,16 +56,8 @@ export class appService {
     Object.keys(data).forEach(function (key) {
       httpParams = httpParams.append(key, data[key]);
     });
-    let token = localStorage.getItem("token")
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'X-OBSERVATORY-AUTH': token
-      }),
-      params:httpParams
-    }
     // console.log(httpParams.keys)
-    return this.http.get<any>(this.shopsAPI_END_POINT,httpOptions);
+    return this.http.get<any>(this.shopsAPI_END_POINT,{params:httpParams});
     //return this.http.get<Point[]>(this.url);
   }
   getProducts(data:any): Observable<any[]>{
@@ -82,28 +66,16 @@ export class appService {
     Object.keys(data).forEach(function (key) {
       httpParams = httpParams.append(key, data[key]);
     });
-    let token = localStorage.getItem("token")
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'X-OBSERVATORY-AUTH': token
-      }),
-      params:httpParams
-    }
     // console.log(httpParams.keys)
-    return this.http.get<any>(this.productsAPI_END_POINT,httpOptions);
+    return this.http.get<any>(this.productsAPI_END_POINT,{params:httpParams});
     //return this.http.get<Point[]>(this.url);
   }
   getShopInfo(id:string): Observable<any>{
     // console.log(httpParams.keys)
-    let token = localStorage.getItem("token")
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json',
-        'X-OBSERVATORY-AUTH': token
-      })
-    }
-    return this.http.get<any>(this.shopsAPI_END_POINT+'/'+id,httpOptions);
+    return this.http.get<any>(this.shopsAPI_END_POINT+'/'+id);
+  }
+  getProductInfo(id:string): Observable<any>{
+    return this.http.get<any>(this.productsAPI_END_POINT+'/'+id);
   }
   uploadCar(data:any){
     let token = localStorage.getItem("token")

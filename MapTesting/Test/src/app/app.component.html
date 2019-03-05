@@ -1,18 +1,36 @@
 <div id="map" class="map"></div>
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
-
 <div *ngIf="infoWindow==true" id=entryInfo class=entryInfo>
-  <div class="exodia">
-    <button (click)="onCloseInfo()">Κλείσε</button>
+  <div class="exodia" style="color:lightgray">
+    <button id="closeInfo" (click)="onCloseInfo()">Κλείσε</button>
   </div>
   <br>
   
   <ul [(ngModel)]="entryInfo" ngDefaultControl>
-    <li>{{entryInfo.name}}</li>
-    <li>{{entryInfo.info}}</li>
+    <h2>Πληροφορίες</h2>
+    <h3>{{entryInfoShopName}}</h3>
+    <h3>Διεύθυνση: {{entryInfoShopAddress}}</h3>
+    <h4>{{entryInfoShopTags}}</h4>
+    <br>
+    <div *ngFor="let info of entryInfoProducts">
+      <div class="image">
+        <h2 style="margin-left:20px">Αυτοκίνητα</h2>
+        <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
+        alt="W3Schools.com" style="width:400px;height:150px;">
+      </div>
+      <h4>Μοντέλο:</h4> {{info.Name}}
+      <h4>Τιμή:</h4> {{info.Price}}
+      <h4>Κατηγορία: </h4> {{info.Category}}
+      <h4>Ημερομηνία:</h4> {{info.Date}}
+      <h4>{{info.Tags}}</h4>
+      <h4>Πληροφορίες: </h4> {{info.Description}}
+      <br>
+      ____________________________
+      <br>
+    </div>
   </ul>
-  <h2>Διεύθυνση: __________________</h2>
+  <h2>Αξιολογήσεις και σχόλια</h2>
   <button (click)="onEntryInfoUploadCar=!onEntryInfoUploadCar">Προσθήκη αυτοκινήτου</button>
   <div class="EntryInfoUploadCar" *ngIf="onEntryInfoUploadCar">
     <input [(ngModel)]="entryInfoWindowCarPrice" placeholder="Τιμή ενοικίασης: πχ. '79.1'" type="text" required/>
@@ -56,34 +74,28 @@
     </div>
     <button (click)="onSaveCar()">Αποθήκευση</button>
   </div>
-  <div class="image">
-    <h2 style="margin-left:20px">Αυτοκίνητα</h2>
-    <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;">     <img src="https://avisassets.abgemea.com/.imaging/gridView_vehicleSearch_large/dms/avis/fleet/Citroen/C1/citroen_14c1feelmc5_2b_sideview.png" 
-    alt="W3Schools.com" style="width:400px;height:150px;"> 
-  </div>
-  <h2>Αξιολογήσεις και σχόλια</h2>
 </div>
 
-<!-- 
-<form action="/action_page.php" method="get">
-  <input list="browsers" name="browser">
-  <datalist id="browsers">
-    <option value="Internet Explorer">
-    <option value="Firefox">
-    <option value="Chrome">
-    <option value="Opera">
-    <option value="Safari">
-  </datalist>
-  <input type="submit">
-</form> 
--->
-
 <div class="header" *ngIf="infoWindow==false">
+  <button (click)="AboutWindow=!AboutWindow" style="float:right; font-size: 20px" > i </button>
+  <div *ngIf="AboutWindow" style="background:rgba(255, 180, 20, 0.596); margin-top:200px"> 
+    <h2> Σχετικά με εμάς!</h2>
+    Αυτή η εφαρμογή έχει εκπαιδευτικό σκοπό και αφορά ένα online παρατηρητήριο τιμών
+    για ενοικιαζόμενα αυτοκίνητα. Τα εργαλεία που χρηιμοποιήσαμε είναι δωρεάν και ελεύθερα και είναι 
+    τα εξής : AngularJs για το frontend και Django για το backend, ενώ
+    επίσης χρησιμοποιήθηκαν κατά την ανάπτυξη εργαλεία όπως το Postman,VScode, ExpressJS κτλ.  
+    Οι γλώσσες για την ανάπτυξη της εφαρμογής είναι TypeScript,Python,Html-CSS.
+    Θέλουμε να ευχαριστησουμε τον Γιαννη Νικολοπουλο για την 
+    εξαιρετικη του προσφορα στην ομαδα μας . 
+    ΝΑ ΣΑΙ ΚΑΛΑ ΕΚΕΙ ΠΟΥ ΕΙΣΑΙ\
+
+    <h2> Στοιχεία επικοινωνίας </h2>
+    Αν είστε εταιρία-πάροχος ενοικιαζόμενων αυτοκινήτων στην Ελλάδα και θέλετε 
+    να επεκτείνετε την επιχείρηση σας ,
+    Παρακαλούμε επικοινωνήστε μαζί μας στο τηλέφωνο 697312325α ή στο email
+    oiGlykoulhdes@gmail.com
+  </div>
+
   <div class="search" >
     <input [(ngModel)]="form_filter_name" placeholder="Όνομα: πχ. Ford Focus" list="Names" name="Names" />
     <datalist id="Names">
@@ -132,14 +144,14 @@
       </ul>
     </div>
   </div>
-  <button class="searchButton" *ngIf="searchButton==true"(click)="onFilter()">Αναζήτηση σε αυτή την περιοχή</button>
+  <button class="searchButton" *ngIf="searchButton==true"(click)="getMyPois()">Αναζήτηση σε αυτή την περιοχή</button>
   <div class="getlocation">
     <button (click)="ongetlocation()">Που είμαι;</button>
   </div>
   <div class="offers">
-      <button (click)="onFilter()">Προσφορές</button>
+      <button (click)="onOffersButton()">Προσφορές</button>
   </div>
-  
+  <div id="onOffersButton"></div>
   <div class="profile" *ngIf="loggedIn==true">
     <button (click)="onProfile()">Προφίλ<!-- {{user.name}} --></button>
   </div>
@@ -151,7 +163,14 @@
     <br>
     πεδίο 42
     <br>
-    <button (click)="onLogout();">Αποσυνδέσου</button>
+    <button (click)="secondWindow=!secondWindow">Αποσυνδέσου</button>
+    <div id="secondWindow" class="secondWindow" *ngIf="secondWindow" >
+      Είστε σίγουροι?
+      <br>
+      <button (click)="onLogout()"> Ναι  </button>
+          ή
+      <button (click)="secondWindow=!secondWindow">Όχι</button>  
+    </div>
   </div>
   <div id="loginWindow" class="profileWindow" *ngIf="loginWindow==true">
     <input [(ngModel)]="username" type="text" placeholder="Όνομα: πχ. Takis97">
@@ -166,7 +185,7 @@
   </div>
 </div>
 
-<div *ngIf="uploadWindow" id="uploadEntry" class="uploadEntry">
+<div *ngIf="uploadWindow" id="uploadEntry" class="uploadEntry" >
   <button (click)="onCloseUploadWindow()">Ακύρωση</button>
   <br>
   <br>
@@ -218,9 +237,10 @@
   <br><br>
   <input [(ngModel)]="uploadWindowShopName" placeholder="Όνομα καταστήματος: πχ. Avis" type="text" required/>
   <br><br>
-  <input [(ngModel)]="uploadWindowShopaddress"  placeholder="Διεύθυνση(προαιρετικό)" type="text" required/>
+  <input [(ngModel)]="uploadWindowShopAddress"  placeholder="Διεύθυνση(προαιρετικό)" type="text" required/>
   <br> <br>
   <button (click)="onSave()">Αποθήκευση</button>
+  <h2 *ngIf= "errorWindow" style="font-size:15px;color:red">Παρακαλούμε συμπληρώστε όλα τα πεδία</h2>
 </div>
 
 <div class="uploadButton">

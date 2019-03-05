@@ -26,6 +26,26 @@ export class AppComponent implements OnInit {
     timeout: 5000,
     maximumAge: 0
   };
+  secondWindow:boolean=false;
+  entryInfoProducts:{
+    Name:string,
+    Description:string,
+    Category:string,
+    Tags:string[],
+    Price:number,
+    Date:string
+  }[]=[];
+  errorWindow:boolean=false;
+  entryInfoShopName:string='';
+  entryInfoShopAddress:string='';
+  entryInfoShopTags:string[]=[];
+  // entryInfoProductPrice:number[];
+  // entryInfoProductDate:string[]=[];
+  // entryInfoProductName:string[]=[];
+  // entryInfoProductDescription:string[]=[];
+  // entryInfoProductCategory:string[]=[];
+  // entryInfoProductTags:string[][]=[];
+  // entryInfoK:number=0;
 
   checkbox1:boolean=false;
   checkbox2:boolean=false;
@@ -109,6 +129,7 @@ export class AppComponent implements OnInit {
 
   shopCarsCount:number=0;
   shopRating:string='';
+  totalPreviewPrices:number=0;
 
   form_left:number;
   form_top:number;
@@ -206,13 +227,30 @@ export class AppComponent implements OnInit {
   }
 
   addSelectedFeatures(event) {
+    let distanceBetweenPoints = function(latlng1, latlng2){
+      var line = new ol.geom.LineString([latlng1, latlng2]);
+      return Math.round(line.getLength() * 100) / 100;
+    };
+    let formatDistance = function(length) {
+      if (length >= 1000) {
+          length = (Math.round(length / 1000 * 100) / 100);
+      } else {
+          length =  Math.round(length);
+      }
+      return length;
+    }
     console.log("adding...")
     var feature = event.target.item(0);
     feature.setStyle(this.selectedStyle)
     this.entryInfo=feature.getProperties();
     console.log("entryInfo.name=",this.entryInfo.name)
     //open the info
-    this.infoWindow = true
+    let coordinates:ol.Coordinate = this.map.getView().getCenter();
+    let lonlat4326 = ol.proj.toLonLat(coordinates,'EPSG:4326');
+    // let lonlat3857 = ol.proj.toLonLat(coordinates,'EPSG:3857');
+    let ourLonlat4326=[this.entryInfo.lng,this.entryInfo.lat];
+    let geoDist=formatDistance(distanceBetweenPoints(lonlat4326,ourLonlat4326))
+    this.previewEntry(this.entryInfo.lng,this.entryInfo.lat);
     return feature;
     // var url = feature.get('url');
     // put the url of the feature into the photo-info div
@@ -228,9 +266,22 @@ export class AppComponent implements OnInit {
     this.onCloseInfo();
   }
   
+  
   getMyPois() {
     // this.pointService.getPoints()
     //   .subscribe(data => this.points = data)
+    let distanceBetweenPoints = function(latlng1, latlng2){
+      var line = new ol.geom.LineString([latlng1, latlng2]);
+      return Math.round(line.getLength() * 100) / 100;
+    };
+    let formatDistance = function(length) {
+      if (length >= 1000) {
+          length = (Math.round(length / 1000 * 100) / 100);
+      } else {
+          length =  Math.round(length);
+      }
+      return length;
+    }
     let map=this.map
     
     let start=0;
@@ -259,20 +310,8 @@ export class AppComponent implements OnInit {
       // long, lat of the top-center pixel
       let ourLonlat4326 = ol.proj.toLonLat(ourCoordinates,'EPSG:4326');
       // let geoDist=Math.sqrt(Math.pow(coordinates[0]-ourCoordinates[0],2)+Math.pow(coordinates[1]-ourCoordinates[1],2));
-      this.distanceBetweenPoints = function(latlng1, latlng2){
-        var line = new ol.geom.LineString([latlng1, latlng2]);
-        return Math.round(line.getLength() * 100) / 100;
-      };
-      this.formatDistance = function(length) {
-        if (length >= 1000) {
-            length = (Math.round(length / 1000 * 100) / 100);
-        } else {
-            length =  Math.round(length);
-        }
-        return length;
-      }
       // ol.proj.transform([pos.longitude, pos.latitude], 'EPSG:4326', 'EPSG:3857'))
-      geoDist=this.formatDistance(this.distanceBetweenPoints(lonlat4326,ourLonlat4326))
+      geoDist=formatDistance(distanceBetweenPoints(lonlat4326,ourLonlat4326))
       console.log("distance in km from top pixel=",geoDist);
       appservice.getPoints({start:start,count:count,geoDist:geoDist,geoLng:geoLng,geoLat:geoLat,dateFrom:dateFrom,dateTo:dateTo,shops:shops,products:products,tags:tags,sort:sort})
         .subscribe((d: {start:number, count:number, total:number, prices:
@@ -283,6 +322,7 @@ export class AppComponent implements OnInit {
         d.forEach(datum => {
           // console.log(datum.start,datum.count,datum.total,datum.prices)
           let p=datum.prices
+          let carCount=datum.total;
           p.forEach(priceInfo => {
             console.log(priceInfo.price,priceInfo.date,priceInfo.productName,priceInfo.productId,priceInfo.productTags,priceInfo.shopAddress,priceInfo.shopId,priceInfo.shopName,priceInfo.shopTags)
             appservice.getShopInfo(priceInfo.shopId).subscribe(
@@ -294,9 +334,11 @@ export class AppComponent implements OnInit {
                       let feature = new ol.Feature(
                         new ol.geom.Point(ol.proj.fromLonLat([+shop.lng, +shop.lat]))
                       );
+                      let t=shop.tags;
+                      let carRating=t.toString();
                     feature.setStyle(defaultStyle);
                     vectorSource.addFeature(feature);
-                    feature.setProperties({name:shop.name,info:shop.address});
+                    feature.setProperties({name:shop.name,count:carCount,rating:carRating,lng:shop.lng,lat:shop.lat});
                   })
               })
           })
@@ -332,6 +374,22 @@ export class AppComponent implements OnInit {
 //   }
 
   onSave() {
+    if(this.uploadWindowPrice==null || this.uploadWindowCarName==null ||
+      this.uploadWindowDateFrom==null || this.uploadWindowDateTo==null ||
+      this.uploadWindowCarCategory==null || this.uploadWindowShopName==null) {
+        // APLO ISON
+        this.errorWindow=true;
+        this.uploadWindowPrice=null
+        this.uploadWindowCarName=null
+        this.uploadWindowDateFrom=null
+        this.uploadWindowDateTo=null
+        this.uploadWindowShopName=null
+        this.uploadWindowCarCategory=null
+        return;
+      }
+      else {
+        this.errorWindow=false;
+      }
     // alert('poi save request');
     if (this.checkbox1===true) {
       this.uploadWindowCarTags.push("GPS-navigation");
@@ -410,7 +468,7 @@ export class AppComponent implements OnInit {
       })
     
     let point = new mapPoint(lonlat[0], lonlat[1]);
-    // getPrice
+    // getPriceentryInfoWindowCarName
     let shopId:any;
     this.appservice.getPoints({start:0,count:0,geoDist:0,geoLng:lonlat[0],geoLat:lonlat[1],dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:null})
     .subscribe((d: {start:number, count:number, total:number, prices:
@@ -427,7 +485,7 @@ export class AppComponent implements OnInit {
           p.forEach(price => {
             shopId=price.shopId;
           })
-    })
+        })
     console.log("shopid",shopId)
     this.appservice.getShopInfo(shopId).subscribe(
       (s:{id:number,name:string,address:string,lng:number,
@@ -443,19 +501,40 @@ export class AppComponent implements OnInit {
                 let f = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([lonlat[0], lonlat[1]])))
                 f.setStyle(this.defaultStyle);
                 // console.log("name,rating,count",this.uploadWindowShopName,this.shopRating,this.shopCarsCount)
-                f.setProperties({name:this.uploadWindowShopName,rating:this.shopRating,count:this.shopCarsCount});
+                f.setProperties({name:this.uploadWindowShopName,rating:this.shopRating,count:this.shopCarsCount,lng:shop.lng,lat:shop.lat});
                 this.vectorSource.addFeature(f);
                 this.uploadWindow=false;
               })
             })
       });
+      
     // console.log("rating",this.shopRating);
     // this.vectorSource.clear();
     
     // this.appservice.upload(point).subscribe(point => this.uploadResponse.push(point));
     // console.log("response from server=", this.uploadResponse)
+    console.log("ATROMHTOI")
+    this.uploadWindowPrice=null
+    this.uploadWindowCarName=null
+    this.uploadWindowDateFrom=null
+    this.uploadWindowDateTo=null
+    this.uploadWindowShopName=null
+    this.uploadWindowCarCategory=null 
+ 
   })}
-  onSaveCar(){
+  onSaveCar(event){
+    let distanceBetweenPoints = function(latlng1, latlng2){
+      var line = new ol.geom.LineString([latlng1, latlng2]);
+      return Math.round(line.getLength() * 100) / 100;
+    };
+    let formatDistance = function(length) {
+      if (length >= 1000) {
+          length = (Math.round(length / 1000 * 100) / 100);
+      } else {
+          length =  Math.round(length);
+      }
+      return length;
+    }
   // entryInfoWindowCarName string = "";
   // entryInfoWindowCarDescription: string = "";
   // entryInfoWindowCarCategory: string = "";
@@ -467,14 +546,81 @@ export class AppComponent implements OnInit {
     tags:this.entryInfoWindowCarTags,withdrawn:this.entryInfoWindowCarWithdrawn,extraData:this.entryInfoWindowCarWithdrawn})
     .subscribe((m:{message:string})=>{
       console.log(m.message)
+      //κανε refresh to preview window για ανανέωση των χαρακτηριστικών του 
+      //???????????/
+      var feature = event.target.item(0);
+      feature.setStyle(this.selectedStyle)
+      this.entryInfo=feature.getProperties();
+      console.log("entryInfo.name=",this.entryInfo.name)
+      //open the info
+      let coordinates:ol.Coordinate = this.map.getView().getCenter();
+      let lonlat4326 = ol.proj.toLonLat(coordinates,'EPSG:4326');
+      console.log("lonlat4326=",lonlat4326)
+      // let lonlat3857 = ol.proj.toLonLat(coordinates,'EPSG:3857');
+      let ourLonlat4326=[this.entryInfo.lng,this.entryInfo.lat];
+      // let geoDist=formatDistance(distanceBetweenPoints(lonlat4326,ourLonlat4326))
+      this.previewEntry(this.entryInfo.lng,this.entryInfo.lat);
     })
-  //κανε refresh to preview window για ανανέωση των χαρακτηριστικών του 
-  //???????????/
   }
-  onCloseInfo() {
-    this.infoWindow = false;
-  }
-  onCloseUploadWindow(){
+  previewEntry(lng:number,lat:number){
+    let dateFrom="2019-03-04";
+    let dateTo=new Date().toISOString().slice(0,10);
+    let total:any;
+    this.appservice.getPoints({start:0,count:1,geoDist:0.001,geoLng:lng,geoLat:lat,dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:"date|DESC"})
+    .subscribe((d: {start:number, count:number, total:number, prices:
+      {price:number,date:string, productName:string,productId:number,
+        productTags:string[],shopId:string,shopName:string,
+        shopTags:string[],shopAddress:string}[]}[]) => {
+          d.forEach(datum => {
+            console.log("geia sou maria")
+            total=datum.total;
+          });
+          console.log("totalllll:",total)
+          this.appservice.getPoints({start:0,count:total-1,geoDist:0.001,geoLng:lng,geoLat:lat,dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:"date|DESC"})
+          .subscribe((d: {start:number, count:number, total:number, prices:
+            {price:number,date:string, productName:string,productId:number,
+              productTags:string[],shopId:string,shopName:string,
+              shopTags:string[],shopAddress:string}[]}[]) => {
+                
+                d.forEach(datum => {
+                  let p=datum.prices
+                  let carCount=datum.total;
+                  let k=0;
+                  p.forEach(priceInfo => {
+                    if (k==0) {
+                      this.entryInfoShopName = priceInfo.shopName;
+                      this.entryInfoShopTags = priceInfo.shopTags;
+                      this.entryInfoShopAddress = priceInfo.shopAddress;
+                    } 
+                    let Price = priceInfo.price;
+                    let Date = priceInfo.date;
+                    let Name = priceInfo.productName;
+                    let Tags = priceInfo.productTags;
+                    console.log("id...=",priceInfo.productId)
+                    this.appservice.getProductInfo(priceInfo.productId.toString())
+                    .subscribe((l:{id:number,name:string,description:string,category:string,tags:string[],withdrawn:boolean}[])=>{      
+                      // console.log(d)
+                      l.forEach(productInfo => {
+                        let Description=productInfo.description;
+                        let Category= productInfo.category;
+                        this.entryInfoProducts.push({Name,Description,Category,Tags,Price,Date})
+                      })
+                    })
+                    // let shopId = priceInfo.shopId;
+                    k++
+                  })
+                  // this.entryInfoK=k;
+                })
+                console.log("entryInfoProducts",this.entryInfoProducts)
+                this.infoWindow=true;
+              });
+              
+            })
+          }
+          onCloseInfo() {
+            this.infoWindow = false;
+          }
+          onCloseUploadWindow(){
     this.uploadWindow = false;
   }
   
@@ -489,7 +635,7 @@ export class AppComponent implements OnInit {
     this.appservice.logout()
     .subscribe((d:{message: string}[]) => {
       d.forEach(datum => {
-        if (datum.message=="logout successful") {
+        if (datum.message=="OK") {
           // console.log("logout message=",datum.message);
           localStorage.removeItem('token');
           document.getElementById("profileWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
@@ -570,6 +716,12 @@ export class AppComponent implements OnInit {
     }
   }
   onFilter(){
-
+    // this.form_filter_name
+    // this.form_filter_category
+    
+  }
+  onOffersButton(){
+    document.getElementById('onOffersButton').innerHTML="<span style='color:red;margin-left:200px;font-weight: bold;font-size:large'>Άουτς</span>";
+    setTimeout(function() {document.getElementById('onOffersButton').innerHTML='';},500);
   }
 }

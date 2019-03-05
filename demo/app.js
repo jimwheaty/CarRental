@@ -125,6 +125,24 @@ app.get('/observatory/api/products',function(req, res){
         }
     ])
 })
+app.get('/observatory/api/products/42',function(req, res){
+    console.log("edw einai to product1")
+    res.send([
+        {
+            id:"42",name:"e",description:"string",
+            category:"string",tags:[],withdrawn:1
+        }
+    ])
+})
+app.get('/observatory/api/products/43',function(req, res){
+    console.log("edw einai to product1")
+    res.send([
+        {
+            id:"42",name:"e",description:"string",
+            category:"string",tags:[],withdrawn:1
+        }
+    ])
+})
 app.get('/observatory/api/shops',function(req, res){
     console.log("edw einai o shop1")
     res.send([
