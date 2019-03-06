@@ -188,7 +188,7 @@
 <div *ngIf="uploadWindow" id="uploadEntry" class="uploadEntry" >
   <button (click)="onCloseUploadWindow()">Ακύρωση</button>
   <br>
-  <br>
+  <h3 style="text-decoration:underline">Νέα καταχώρηση</h3>
   Ημερομηνία ενοικίασης <input [(ngModel)]="uploadWindowDateFrom" type="date" autofocus required/>
   <br>
   <br>
@@ -242,7 +242,9 @@
   <button (click)="onSave()">Αποθήκευση</button>
   <h2 *ngIf= "errorWindow" style="font-size:15px;color:red">Παρακαλούμε συμπληρώστε όλα τα πεδία</h2>
 </div>
-
+<div *ngIf = "errorMessageWindow" style="background:darkred">
+  ERROR, ΠΑΡΑΚΑΛΩ ΑΝΑΝΕΩΣΤΕ ΤΗ ΣΕΛΙΔΑ ΚΑΙ ΠΡΟΣΠΑΘΗΣΤΕ ΞΑΝΑ
+</div>
 <div class="uploadButton">
   <button *ngIf="!uploadWindow  && loggedIn"(click)="onOpenUploadWindow()" >Νέα προσθήκη εδώ !</button>
 </div>

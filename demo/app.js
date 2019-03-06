@@ -6,7 +6,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = 3000;
+const PORT = 8765;
 
 // var routes = require('./routes/index');
 // var users = require('./routes/users');
@@ -31,10 +31,10 @@ app.get('/observatory/api/', function(req, res){
     //res.json({"x":"38.050855", "y":"23.819017"})
     console.log("4242");
     res.json([{
-        x:"23.818984", y:"38.050653", name:"Takissssss", info:"Spitarona"
+        x:"23.818984", y:"38.050653", name:"TheCarsShop", info:"TooHigh"
      },
      {
-        x:'24', y:'38', name:"Pnigikaaa", info:"mallon skafos"
+        x:'24', y:'38', name:"BestCars", info:"SuperSports"
      }
      ]);
     // res.status(200).send({"message":"geiaaa"})
@@ -44,45 +44,45 @@ app.get('/observatory/api/', function(req, res){
 });
 app.get('/observatory/api/prices', function(req, res){
     console.log("parameters:",req.query)
-    res.send([{start:0, count:2, total:3, prices:[
-        {price:42,date:"takis", productName:"takis2",productId:42,
-          productTags:["takis3","takis4"],shopId:"takis5",shopName:"takis6",
-          shopTags:["mhxanhkafe","tavli"],shopAddress:"konta"},
+    res.send({start:0, count:2, total:3, prices:[
+        {price:42,date:"1973-10-10", productName:"Ford Focus",productId:42,
+          productTags:["Zoula","Zoula"],shopId:"9834",shopName:"Kitsos",
+          shopTags:["HighService","EasyService"],shopAddress:"Papaswthriou"},
         {price:43,date:"takis7", productName:"takis8",productId:43,
-          productTags:["takis3","takis4"],shopId:"0",shopName:"takis6",
-          shopTags:["mhxanhkafe","tavli"],shopAddress:"konta"}
-    ]}])
+          productTags:["takis3","takis4"],shopId:"0",shopName:"FastCars",
+          shopTags:["HighService","EasyService"],shopAddress:"Kekropos"}
+    ]})
 })
 app.post('/observatory/api/prices', function(req, res){
     // console.log("parameters:",req.query)
     res.send({message:"ok!"})
 })
-app.get('/observatory/api/shops/takis5',function(req, res){
-    console.log("edw einai o takis5")
-    res.send([
+app.get('/observatory/api/shops/shop3',function(req, res){
+    console.log("edw einai o shop3")
+    res.send(
         {
-            id:"takis5",name:"takis home",address:"string",lng:23.818984,
+            id:"324",name:"GoodCars",address:"Melissiwn",lng:23.818984,
             lat:38.050653,tags:[],withdrawn:1
         }
-    ])
+    )
 })
-app.get('/observatory/api/shops/takis50',function(req, res){
-    console.log("edw einai o takis50")
-    res.send([
+app.get('/observatory/api/shops/9834',function(req, res){
+    console.log("Edw einai to shop1")
+    res.send(
         {
-            id:"takis50",name:"pnigika home",address:"string",lng:24,
+            id:"9834",name:"Ford Focus",address:"Moyrganas",lng:24,
             lat:38,tags:[],withdrawn:1
         }
-    ])
+    )
 })
 app.get('/observatory/api/shops/0',function(req, res){
-    console.log("edw einai o 0")
-    res.send([
+    console.log("Edw einai to shop2")
+    res.send(
         {
-            id:"0",name:"pnigika home",address:"string",lng:24,
-            lat:38,tags:["42"],withdrawn:1
+            id:"0",name:"Opel Astra",address:"Kalograizas",lng:23.435,
+            lat:37.3254,tags:["Arcodition"],withdrawn:1
         }
-    ])
+    )
 })
 app.post('/observatory/api/upload', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
@@ -93,64 +93,63 @@ app.post('/observatory/api/upload', function(req, res){
 app.post('/observatory/api/login', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
-    res.status(200).send([{
+    res.status(200).send({
         "success":"true",
         "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
-     }])
+     })
 });
-app.get('/observatory/api/logout', function(req, res){
+app.post('/observatory/api/logout', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
-    res.status(200).send([{
+    res.status(200).send({
         "message":"OK"
-    }])
+    })
     console.log("logout token=",req.header("x-observatory-auth"))
 });
 app.post('/observatory/api/signup', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body);
-    res.send([{
-        "success":"true",
-        "message":"Authentication successful!",   "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
-     }])
+    res.send({
+        "X-OBSERVATORY-AUTH":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTM0OTMzNTY2LCJleHAiOjE1MzUwMTk5NjZ9.3xOdoxpK8hb42ykjMIl6rwLafB63Y-EQNOO9fFamp68"
+     })
 });
 let uploadProductResultId=42;
 let uploadShopResultId=42;
 
 app.get('/observatory/api/products',function(req, res){
     console.log("edw einai to product1")
-    res.send([
+    res.send(
         {start:0,count:1,total:1,products:[
             {id:"42",name:"e",description:"string",
             category:"string",tags:[],withdrawn:1}]
         }
-    ])
+    )
 })
 app.get('/observatory/api/products/42',function(req, res){
     console.log("edw einai to product1")
-    res.send([
+    res.send(
         {
-            id:"42",name:"e",description:"string",
+            id:"42",name:"Toyata",description:"string",
             category:"string",tags:[],withdrawn:1
         }
-    ])
+    )
 })
 app.get('/observatory/api/products/43',function(req, res){
     console.log("edw einai to product1")
-    res.send([
+    res.send(
         {
-            id:"42",name:"e",description:"string",
+            id:"42",name:"Cintroen",description:"string",
             category:"string",tags:[],withdrawn:1
         }
-    ])
+    )
 })
 app.get('/observatory/api/shops',function(req, res){
     console.log("edw einai o shop1")
-    res.send([
+    res.send(
         {start:0,count:1,total:1,shops:[
             {id:"42",name:"pnigika home",address:"string",lng:24,
             lat:38,tags:[],withdrawn:1}]
         }
-    ])
+    )
 })
 app.post('/observatory/api/products', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");

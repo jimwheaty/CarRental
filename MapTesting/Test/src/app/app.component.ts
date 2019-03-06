@@ -71,8 +71,8 @@ export class AppComponent implements OnInit {
   checkbox26:boolean=false;
   checkbox27:boolean=false;
   checkbox28:boolean=false;
-
-
+  
+  errorMessageWindow:boolean=false;
   public infoWindow:boolean=false;
   public uploadWindow:boolean=false;
   public tagListWindow:boolean=false;
@@ -80,10 +80,10 @@ export class AppComponent implements OnInit {
   public loginWindow:boolean=false;
   public uploadWindowCarTagList:boolean=false;
   
-  public uploadResponse = [];
-  public signupResponse = [];
-  public loginResponse:{success: Boolean, message: string, token:string}[]=[];
-  response:{success: Boolean, message: string, token:string}
+  // public uploadResponse = [];
+  // public signupResponse = [];
+  // public loginResponse:{success: Boolean, message: string, token:string}[]=[];
+  // response:{success: Boolean, message: string, token:string}
 
   public entryInfo:any;
   select:any;
@@ -314,22 +314,21 @@ export class AppComponent implements OnInit {
       geoDist=formatDistance(distanceBetweenPoints(lonlat4326,ourLonlat4326))
       console.log("distance in km from top pixel=",geoDist);
       appservice.getPoints({start:start,count:count,geoDist:geoDist,geoLng:geoLng,geoLat:geoLat,dateFrom:dateFrom,dateTo:dateTo,shops:shops,products:products,tags:tags,sort:sort})
-        .subscribe((d: {start:number, count:number, total:number, prices:
+        .subscribe((datum: {start:number, count:number, total:number, prices:
           {price:number,date:string, productName:string,productId:number,
             productTags:string[],shopId:string,shopName:string,
-            shopTags:string[],shopAddress:string}[]}[]) => {
+            shopTags:string[],shopAddress:string}[]}) => {
         
-        d.forEach(datum => {
+        // d.forEach(datum => {
           // console.log(datum.start,datum.count,datum.total,datum.prices)
           let p=datum.prices
           let carCount=datum.total;
           p.forEach(priceInfo => {
             console.log(priceInfo.price,priceInfo.date,priceInfo.productName,priceInfo.productId,priceInfo.productTags,priceInfo.shopAddress,priceInfo.shopId,priceInfo.shopName,priceInfo.shopTags)
             appservice.getShopInfo(priceInfo.shopId).subscribe(
-              (s:{id:number,name:string,address:string,lng:number,
-                  lat:number,tags:string[],withdrawn:boolean}[])=>{
+              (shop:{id:number,name:string,address:string,lng:number,
+                  lat:number,tags:string[],withdrawn:boolean})=>{
                     // console.log(d)
-                    s.forEach(shop => {
                       // console.log("lng,lat=",shop.lng,shop.lat)
                       let feature = new ol.Feature(
                         new ol.geom.Point(ol.proj.fromLonLat([+shop.lng, +shop.lat]))
@@ -339,45 +338,18 @@ export class AppComponent implements OnInit {
                     feature.setStyle(defaultStyle);
                     vectorSource.addFeature(feature);
                     feature.setProperties({name:shop.name,count:carCount,rating:carRating,lng:shop.lng,lat:shop.lat});
-                  })
               })
           })
         })
-        });
+        // });
       })
-      // this.appservice.getPoints()
-      //   .toPromise()
-      //   .then((d: {x:number, y:number, name:string, info:string}[]) => {
-        
-      //   //let max = Math.max(...d.map(dd=>parseFloat(dd.value)));
-      //   d.forEach(datum => {
-      //     console.log(datum.x,datum.y);
-      //     let feature = new ol.Feature(
-      //       new ol.geom.Point(ol.proj.fromLonLat([+datum.x, +datum.y]))
-      //     );
-      //     feature.setStyle(this.defaultStyle);
-      //     this.vectorSource.addFeature(feature);
-      //     feature.setProperties({name:datum.name,info:datum.info});
-  
-      //   });
-      // })
-    
-
   }
-  // getMyPois() {
-  //   this.pointService.enroll(this.point).subscribe(data => console.log("Success",data))
-  // }
-//       /*.catch((err: HttpErrorResponse) => {
-//         // simple logging, but you can do a lot more, see below
-//         console.error('An error occurred:', err.error);
-//       })*/;
-//   }
 
   onSave() {
     if(this.uploadWindowPrice==null || this.uploadWindowCarName==null ||
       this.uploadWindowDateFrom==null || this.uploadWindowDateTo==null ||
       this.uploadWindowCarCategory==null || this.uploadWindowShopName==null) {
-        // APLO ISON
+        // APLO =
         this.errorWindow=true;
         this.uploadWindowPrice=null
         this.uploadWindowCarName=null
@@ -420,63 +392,78 @@ export class AppComponent implements OnInit {
     let lonlat = ol.proj.toLonLat(coordinates,'EPSG:3857');
     let myShopId:any;
     let myProductId:any;
+    this.errorMessageWindow=false;
     this.appservice.uploadCar({id:0,name:this.uploadWindowCarName,
       description:this.uploadWindowCarDescription,category:this.uploadWindowCarCategory,
       tags:this.uploadWindowCarTags,withdrawn:this.uploadWindowCarWithdrawn,extraData:this.uploadWindowCarExtradata})
       .subscribe((m:{message:string})=>{
         console.log(m.message)
+        if (m.message!="OK") {
+          this.errorMessageWindow=true;
+          return
+        }
       })
+    this.errorMessageWindow=false
     this.appservice.uploadShop({id:0,name:this.uploadWindowShopName,
       address:this.uploadWindowShopAddress,lng:lonlat[0],lat:lonlat[1],
       tags:this.uploadWindowShopTags,withdrawn:this.uploadWindowShopWithdrawn})
       .subscribe((m:{message:string})=>{
         console.log(m.message)
+        if(m.message!="OK"){
+          this.errorMessageWindow=true;
+          return
+        }
       })
     this.appservice.getShops({start:0,count:1,status:"ACTIVE",sort:"id|DESC"})
-    .subscribe((d:{start:Number,count:Number,total:Number,shops:
+    .subscribe((datum:{start:Number,count:Number,total:Number,shops:
       {id:Number,name:String,address:String,lng:Number,lat:Number,tags:String[],withdrawn:Boolean}[]
-    }[])=>{
+    })=>{
       // console.log(d)
-      d.forEach(datum => {
+      // d.forEach(datum => {
         let s=datum.shops;
         s.forEach(shop => {
           myShopId=shop.id;
           console.log(myShopId)
         })
-      })
+      // })
     })
     this.appservice.getProducts({start:0,count:1,status:"ACTIVE",sort:"id|DESC"})
-    .subscribe((d:{start:Number,count:Number,total:Number,products:
+    .subscribe((datum:{start:Number,count:Number,total:Number,products:
       {id:Number,name:String,description:String,category:string,tags:String[],withdrawn:Boolean}[]
-    }[])=>{      
+    })=>{      
       // console.log(d)
-      d.forEach(datum => {
+      // d.forEach(datum => {
         let p=datum.products;
         p.forEach(product => {
           myProductId=product.id;
           console.log(myProductId)
         })
-      })
+      // })
     })
     let dateFrom=this.uploadWindowDateFrom;
     let dateTo=this.uploadWindowDateTo;
     let price=this.uploadWindowPrice;
+    this.errorMessageWindow=false
     this.appservice.uploadPrice({price:price,dateFrom:dateFrom,
       dateTo:dateTo,productId:myProductId,shopId:myShopId})
       .subscribe((d:{message:string})=>{
         console.log(d.message)
+        if(d.message!="OK"){
+          this.errorMessageWindow=true
+          return
+        }
       })
     
     let point = new mapPoint(lonlat[0], lonlat[1]);
     // getPriceentryInfoWindowCarName
     let shopId:any;
     this.appservice.getPoints({start:0,count:0,geoDist:0,geoLng:lonlat[0],geoLat:lonlat[1],dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:null})
-    .subscribe((d: {start:number, count:number, total:number, prices:
+    .subscribe((datum: {start:number, count:number, total:number, prices:
       {price:number,date:string, productName:string,productId:number,
         productTags:string[],shopId:string,shopName:string,
-        shopTags:string[],shopAddress:string}[]}[]) => {
+        shopTags:string[],shopAddress:string}[]}) => {
     
-        d.forEach(datum => {
+        // d.forEach(datum => {
           // console.log(datum.start,datum.count,datum.total,datum.prices)
           this.shopCarsCount=datum.total;
           console.log("total=",this.shopCarsCount)
@@ -485,13 +472,13 @@ export class AppComponent implements OnInit {
           p.forEach(price => {
             shopId=price.shopId;
           })
-        })
+        // })
     console.log("shopid",shopId)
     this.appservice.getShopInfo(shopId).subscribe(
-      (s:{id:number,name:string,address:string,lng:number,
-          lat:number,tags:string[],withdrawn:boolean}[])=>{
+      (shop:{id:number,name:string,address:string,lng:number,
+          lat:number,tags:string[],withdrawn:boolean})=>{
             // console.log(d)
-            s.forEach(shop => {
+            // s.forEach(shop => {
               console.log("lng,lat=",shop.lng,shop.lat)
               let t=shop.tags
 //????????????test
@@ -505,7 +492,7 @@ export class AppComponent implements OnInit {
                 this.vectorSource.addFeature(f);
                 this.uploadWindow=false;
               })
-            })
+            // })
       });
       
     // console.log("rating",this.shopRating);
@@ -541,11 +528,16 @@ export class AppComponent implements OnInit {
   // entryInfoWindowCarTags: string[] = [];
   // entryInfoWindowCarWithdrawn: boolean;
   // entryInfoWindowCarExtradata: string = "";
+  this.errorMessageWindow=false
   this.appservice.uploadCar({id:0,name:this.entryInfoWindowCarName,
     description:this.entryInfoWindowCarDescription,category:this.entryInfoWindowCarCategory,
     tags:this.entryInfoWindowCarTags,withdrawn:this.entryInfoWindowCarWithdrawn,extraData:this.entryInfoWindowCarWithdrawn})
-    .subscribe((m:{message:string})=>{
+    .toPromise().then((m:{message:string})=>{
       console.log(m.message)
+      if(m.message!="OK") {
+        this.errorMessageWindow=true
+        return
+      }
       //κανε refresh to preview window για ανανέωση των χαρακτηριστικών του 
       //???????????/
       var feature = event.target.item(0);
@@ -567,24 +559,24 @@ export class AppComponent implements OnInit {
     let dateTo=new Date().toISOString().slice(0,10);
     let total:any;
     this.appservice.getPoints({start:0,count:1,geoDist:0.001,geoLng:lng,geoLat:lat,dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:"date|DESC"})
-    .subscribe((d: {start:number, count:number, total:number, prices:
+    .subscribe((datum: {start:number, count:number, total:number, prices:
       {price:number,date:string, productName:string,productId:number,
         productTags:string[],shopId:string,shopName:string,
-        shopTags:string[],shopAddress:string}[]}[]) => {
-          d.forEach(datum => {
+        shopTags:string[],shopAddress:string}[]}) => {
+          // d.forEach(datum => {
             console.log("geia sou maria")
             total=datum.total;
-          });
+          // });
           console.log("totalllll:",total)
           this.appservice.getPoints({start:0,count:total-1,geoDist:0.001,geoLng:lng,geoLat:lat,dateFrom:dateFrom,dateTo:dateTo,shops:[],products:[],tags:[],sort:"date|DESC"})
-          .subscribe((d: {start:number, count:number, total:number, prices:
+          .subscribe((dd: {start:number, count:number, total:number, prices:
             {price:number,date:string, productName:string,productId:number,
               productTags:string[],shopId:string,shopName:string,
-              shopTags:string[],shopAddress:string}[]}[]) => {
+              shopTags:string[],shopAddress:string}[]}) => {
                 
-                d.forEach(datum => {
-                  let p=datum.prices
-                  let carCount=datum.total;
+                // d.dforEach(datum => {
+                  let p=dd.prices
+                  let carCount=dd.total;
                   let k=0;
                   p.forEach(priceInfo => {
                     if (k==0) {
@@ -598,19 +590,19 @@ export class AppComponent implements OnInit {
                     let Tags = priceInfo.productTags;
                     console.log("id...=",priceInfo.productId)
                     this.appservice.getProductInfo(priceInfo.productId.toString())
-                    .subscribe((l:{id:number,name:string,description:string,category:string,tags:string[],withdrawn:boolean}[])=>{      
+                    .subscribe((productInfo:{id:number,name:string,description:string,category:string,tags:string[],withdrawn:boolean})=>{      
                       // console.log(d)
-                      l.forEach(productInfo => {
+                      // l.forEach(productInfo => {
                         let Description=productInfo.description;
                         let Category= productInfo.category;
                         this.entryInfoProducts.push({Name,Description,Category,Tags,Price,Date})
-                      })
+                      // })
                     })
                     // let shopId = priceInfo.shopId;
                     k++
                   })
                   // this.entryInfoK=k;
-                })
+                // })
                 console.log("entryInfoProducts",this.entryInfoProducts)
                 this.infoWindow=true;
               });
@@ -632,9 +624,10 @@ export class AppComponent implements OnInit {
   }
   onLogout() {
     // profileWindow=false; tokenValue=null;
+    this.errorMessageWindow=false
     this.appservice.logout()
-    .subscribe((d:{message: string}[]) => {
-      d.forEach(datum => {
+    .subscribe((datum:{message: string}) => {
+      // d.forEach(datum => {
         if (datum.message=="OK") {
           // console.log("logout message=",datum.message);
           localStorage.removeItem('token');
@@ -646,7 +639,7 @@ export class AppComponent implements OnInit {
           document.getElementById("profileWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
           setTimeout(function() {document.getElementById('profileWindow').innerHTML='';},4000);
         }
-      })
+      // })
     })
   }
   onSignUpButton() {
@@ -654,24 +647,24 @@ export class AppComponent implements OnInit {
     let user = new User(this.username, this.password);
     // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
     this.appservice.signup(user)
-    .subscribe((d:{success: string, message: string, token:string}[]) => {
-      d.forEach(datum => {
-        if (datum.success=="true") {
+    .subscribe((d:{"X-OBSERVATORY-AUTH":string}) => {
+      // d.forEach(datum => {
+        // if (datum.success=="true") {
           // console.log("token=",datum.token);
           this.key = "token"
-          localStorage.setItem(this.key, datum.token)
+          localStorage.setItem(this.key, d["X-OBSERVATORY-AUTH"])
           let item = localStorage.getItem(this.key)
           console.log("saved token=",item);
           document.getElementById("loginWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
           setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
           this.loggedIn=true; 
           // this.loginWindow=false; 
-        }
-        else {
-          document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
-          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
-        }
-      });
+        // }
+        // else {
+          // document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
+          // setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+        // }
+      // });
     })
   }
   onLogInButton() {
@@ -679,24 +672,24 @@ export class AppComponent implements OnInit {
     let user = new User(this.username, this.password);
     // this.appservice.login(user).subscribe(user => this.loginResponse.push(user));
     this.appservice.login(user)
-    .subscribe((d:{success: string, message: string, token:string}[]) => {
-      d.forEach(datum => {
-        if (datum.success=="true") {
+    .subscribe((d:{"X-OBSERVATORY-AUTH":string}) => {
+      // d.forEach(datum => {
+        // if (d.success=="true") {
           // console.log("token=",datum.token);
           this.key = "token"
-          localStorage.setItem(this.key, datum.token)
+          localStorage.setItem(this.key, d["X-OBSERVATORY-AUTH"])
           let item = localStorage.getItem(this.key)
           console.log("saved token=",item);
           document.getElementById("loginWindow").innerHTML = "<span style='color:green;font-weight: bold;font-size:large'>Success</span>";
           setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
           this.loggedIn=true; 
           // this.loginWindow=false; 
-        }
-        else {
-          document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
-          setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
-        }
-      });
+        // })
+        // else {
+        //   document.getElementById("loginWindow").innerHTML = "<span style='color:red;font-weight: bold;font-size:large'>Error. Please try again</span>";
+        //   setTimeout(function() {document.getElementById('loginWindow').innerHTML='';},4000);
+        // }
+      // });
     })
   }
 
