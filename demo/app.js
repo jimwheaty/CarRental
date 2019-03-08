@@ -44,13 +44,16 @@ app.get('/observatory/api/', function(req, res){
 });
 app.get('/observatory/api/prices', function(req, res){
     console.log("parameters:",req.query)
-    res.send({start:0, count:2, total:3, prices:[
+    res.send({start:0, count:3, total:3, prices:[
         {price:42,date:"1973-10-10", productName:"Ford Focus",productId:42,
           productTags:["Zoula","Zoula"],shopId:"9834",shopName:"Kitsos",
           shopTags:["HighService","EasyService"],shopAddress:"Papaswthriou"},
-        {price:43,date:"takis7", productName:"takis8",productId:43,
-          productTags:["takis3","takis4"],shopId:"0",shopName:"FastCars",
-          shopTags:["HighService","EasyService"],shopAddress:"Kekropos"}
+        {price:43,date:"2016-04-01", productName:"Opel Astra",productId:43,
+          productTags:["tag1","tag2"],shopId:"0",shopName:"FastCars",
+          shopTags:["HighService","EasyService"],shopAddress:"Kekropos"},
+        {price:44,date:"2017-01-02",productName:"Citroen C1", productId:44,
+          productTags:["tag2","tag5"],shopId:"2",shopName:"CarRental",
+          shopTags:["EasyService"],shopAdress:"Kolokotroni 65"}
     ]})
 })
 app.post('/observatory/api/prices', function(req, res){
@@ -75,12 +78,21 @@ app.get('/observatory/api/shops/9834',function(req, res){
         }
     )
 })
+app.get('/observatory/api/shops/2',function(req, res){
+    console.log("Edw einai to shop2")
+    res.send(
+        {
+            id:"2",name:"IounioRental",address:"Miranas",lng:23,
+            lat:36.9,tags:[],withdrawn:1
+        }
+    )
+})
 app.get('/observatory/api/shops/0',function(req, res){
     console.log("Edw einai to shop2")
     res.send(
         {
             id:"0",name:"Opel Astra",address:"Kalograizas",lng:23.435,
-            lat:37.3254,tags:["Arcodition"],withdrawn:1
+            lat:37.3254,tags:["Air condition"],withdrawn:1
         }
     )
 })
